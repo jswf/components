@@ -1,10 +1,10 @@
-package jswf.components.http;
+package java.jswf.components.http;
 
 import jswf.framework.AbstractComponent;
 import jswf.framework.Environment;
 
-import jswf.components.http.routeHandlerComponent.Request;
-import jswf.components.http.routeHandlerComponent.Response;
+import java.jswf.components.http.routeHandlerComponent.Request;
+import java.jswf.components.http.routeHandlerComponent.Response;
 
 import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;

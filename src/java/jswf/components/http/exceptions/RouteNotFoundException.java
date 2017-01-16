@@ -1,4 +1,4 @@
-package jswf.commons.components.http.exceptions;
+package java.jswf.components.http.exceptions;
 
 public class RouteNotFoundException extends Exception {
 

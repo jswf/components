@@ -1,4 +1,4 @@
-package jswf.components.http.routeHandlerComponent;
+package java.jswf.components.http.routeHandlerComponent;
 
 import jswf.framework.RequestInterface;
 import jswf.framework.RouteInterface;
@@ -12,8 +12,6 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.Enumeration;
 

@@ -1,4 +1,6 @@
-package jswf.components.http.routeHandlerComponent;
+package java.jswf.components.http.routeHandlerComponent;
+
+import jswf.framework.RouteHandlerInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,13 +27,13 @@ public class Route extends AbstractRoute {
 
     protected ArrayList<String> methods;
 
-    protected RequestHandlerInterface handler;
+    protected RouteHandlerInterface handler;
 
     protected String protocol = Route.PROTOCOL_ANY;
 
     protected HashMap<String, String> uriParameters;
 
-    public Route(ArrayList<String> methods, String name, String uri, RequestHandlerInterface handler) {
+    public Route(ArrayList<String> methods, String name, String uri, RouteHandlerInterface handler) {
         this.uriParameters = new HashMap<String, String>();
 
         this.setName(name);

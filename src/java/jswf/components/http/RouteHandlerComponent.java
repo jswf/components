@@ -1,10 +1,9 @@
-package jswf.components.http;
+package java.jswf.components.http;
 
-import jswf.components.http.exceptions.RouteNotFoundException;
-import jswf.components.http.routeHandlerComponent.Request;
-import jswf.components.http.routeHandlerComponent.RequestHandlerInterface;
-import jswf.components.http.routeHandlerComponent.Response;
-import jswf.components.http.routeHandlerComponent.Route;
+import java.jswf.components.http.exceptions.RouteNotFoundException;
+import java.jswf.components.http.routeHandlerComponent.Request;
+import java.jswf.components.http.routeHandlerComponent.Response;
+import java.jswf.components.http.routeHandlerComponent.Route;
 
 import jswf.framework.*;
 
@@ -55,7 +54,7 @@ public class RouteHandlerComponent extends AbstractComponent {
         next(environment);
     }
 
-    public RouteHandlerComponent addGet(String name, String path, RequestHandlerInterface handler) {
+    public RouteHandlerComponent addGet(String name, String path, RouteHandlerInterface handler) {
         ArrayList<String> methods = new ArrayList<>();
         methods.add(Route.METHOD_GET);
 
@@ -65,7 +64,7 @@ public class RouteHandlerComponent extends AbstractComponent {
         return this;
     }
 
-    public RouteHandlerComponent addGet(String path, RequestHandlerInterface handler) {
+    public RouteHandlerComponent addGet(String path, RouteHandlerInterface handler) {
         ArrayList<String> methods = new ArrayList<>();
         methods.add(Route.METHOD_GET);
 
@@ -75,7 +74,7 @@ public class RouteHandlerComponent extends AbstractComponent {
         return this;
     }
 
-    public RouteHandlerComponent addPost(String name, String path, RequestHandlerInterface handler) {
+    public RouteHandlerComponent addPost(String name, String path, RouteHandlerInterface handler) {
         ArrayList<String> methods = new ArrayList<>();
         methods.add(Route.METHOD_POST);
 
@@ -85,7 +84,7 @@ public class RouteHandlerComponent extends AbstractComponent {
         return this;
     }
 
-    public RouteHandlerComponent addPost(String path, RequestHandlerInterface handler) {
+    public RouteHandlerComponent addPost(String path, RouteHandlerInterface handler) {
         ArrayList<String> methods = new ArrayList<>();
         methods.add(Route.METHOD_POST);
 
@@ -95,7 +94,7 @@ public class RouteHandlerComponent extends AbstractComponent {
         return this;
     }
 
-    public RouteHandlerComponent addPut(String name, String path, RequestHandlerInterface handler) {
+    public RouteHandlerComponent addPut(String name, String path, RouteHandlerInterface handler) {
         ArrayList<String> methods = new ArrayList<>();
         methods.add(Route.METHOD_PUT);
 
@@ -105,7 +104,7 @@ public class RouteHandlerComponent extends AbstractComponent {
         return this;
     }
 
-    public RouteHandlerComponent addPut(String path, RequestHandlerInterface handler) {
+    public RouteHandlerComponent addPut(String path, RouteHandlerInterface handler) {
         ArrayList<String> methods = new ArrayList<>();
         methods.add(Route.METHOD_PUT);
 
@@ -115,7 +114,7 @@ public class RouteHandlerComponent extends AbstractComponent {
         return this;
     }
 
-    public RouteHandlerComponent addDelete(String name, String path, RequestHandlerInterface handler) {
+    public RouteHandlerComponent addDelete(String name, String path, RouteHandlerInterface handler) {
         ArrayList<String> methods = new ArrayList<>();
         methods.add(Route.METHOD_DELETE);
 
@@ -125,7 +124,7 @@ public class RouteHandlerComponent extends AbstractComponent {
         return this;
     }
 
-    public RouteHandlerComponent addDelete(String path, RequestHandlerInterface handler) {
+    public RouteHandlerComponent addDelete(String path, RouteHandlerInterface handler) {
         ArrayList<String> methods = new ArrayList<>();
         methods.add(Route.METHOD_DELETE);
 
@@ -135,7 +134,7 @@ public class RouteHandlerComponent extends AbstractComponent {
         return this;
     }
 
-    public RouteHandlerComponent addAny(String name, String path, RequestHandlerInterface handler) {
+    public RouteHandlerComponent addAny(String name, String path, RouteHandlerInterface handler) {
         ArrayList<String> methods = new ArrayList<>();
         methods.add(Route.METHOD_ANY);
 
@@ -145,7 +144,7 @@ public class RouteHandlerComponent extends AbstractComponent {
         return this;
     }
 
-    public RouteHandlerComponent addAny(String path, RequestHandlerInterface handler) {
+    public RouteHandlerComponent addAny(String path, RouteHandlerInterface handler) {
         ArrayList<String> methods = new ArrayList<>();
         methods.add(Route.METHOD_ANY);
 

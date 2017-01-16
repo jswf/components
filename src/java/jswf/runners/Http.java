@@ -1,7 +1,7 @@
-package jswf.runners;
+package java.jswf.runners;
 
-import jswf.components.http.routeHandlerComponent.Request;
-import jswf.components.http.routeHandlerComponent.Response;
+import java.jswf.components.http.routeHandlerComponent.Request;
+import java.jswf.components.http.routeHandlerComponent.Response;
 
 import jswf.framework.*;
 

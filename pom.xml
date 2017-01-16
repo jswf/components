@@ -27,7 +27,8 @@
         <powermock.version>1.6.4</powermock.version>
         <mockito.version>1.10.19</mockito.version>
         <commons-codec.version>1.10</commons-codec.version>
-        <jswf.framework.version>0.0.1</jswf.framework.version>
+        <slf4j.version>1.7.13</slf4j.version>
+        <jswf.framework.version>f673f793b521c48547eab67ecc3e498bb4c9f3f4</jswf.framework.version>
     </properties>
 
     <repositories>
@@ -42,6 +43,18 @@
             <groupId>com.github.jswf</groupId>
             <artifactId>framework</artifactId>
             <version>${jswf.framework.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
 
         <dependency>

@@ -1,5 +1,6 @@
-package jswf.components.http.routeHandlerComponent;
+package java.jswf.components.http.routeHandlerComponent;
 
+import jswf.framework.RouteHandlerInterface;
 import jswf.framework.RouteInterface;
 
 import java.util.regex.Pattern;
@@ -12,7 +13,7 @@ public abstract class AbstractRoute implements RouteInterface {
 
     protected Pattern compiledPath;
 
-    protected RequestHandlerInterface handler;
+    protected RouteHandlerInterface handler;
 
     public AbstractRoute setName(String name) {
         this.name = name;
@@ -44,11 +45,11 @@ public abstract class AbstractRoute implements RouteInterface {
         return this;
     }
 
-    public RequestHandlerInterface getHandler() {
+    public RouteHandlerInterface getHandler() {
         return handler;
     }
 
-    public AbstractRoute setHandler(RequestHandlerInterface handler) {
+    public AbstractRoute setHandler(RouteHandlerInterface handler) {
         this.handler = handler;
 
         return this;
