@@ -42,20 +42,6 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
@@ -67,7 +53,7 @@
         <mockito.version>1.10.19</mockito.version>
         <commons-codec.version>1.10</commons-codec.version>
         <slf4j.version>1.7.13</slf4j.version>
-        <jswf.framework.version>f673f793b521c48547eab67ecc3e498bb4c9f3f4</jswf.framework.version>
+        <jswf.framework.version>a7e2ff07b2212a5f203e234ba4bec3325ac1da9a</jswf.framework.version>
     </properties>
 
     <repositories>
