@@ -1,4 +1,4 @@
-package java.jswf.components.http.routeHandlerComponent;
+package jswf.components.http.routeHandlerComponent;
 
 import jswf.framework.RouteHandlerInterface;
 

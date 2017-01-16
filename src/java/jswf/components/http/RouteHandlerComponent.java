@@ -1,9 +1,9 @@
-package java.jswf.components.http;
+package jswf.components.http;
 
-import java.jswf.components.http.exceptions.RouteNotFoundException;
-import java.jswf.components.http.routeHandlerComponent.Request;
-import java.jswf.components.http.routeHandlerComponent.Response;
-import java.jswf.components.http.routeHandlerComponent.Route;
+import jswf.components.http.exceptions.RouteNotFoundException;
+import jswf.components.http.routeHandlerComponent.Request;
+import jswf.components.http.routeHandlerComponent.Response;
+import jswf.components.http.routeHandlerComponent.Route;
 
 import jswf.framework.*;
 

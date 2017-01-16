@@ -1,11 +1,11 @@
-package java.jswf.components.http;
+package jswf.components.http;
 
 import jswf.framework.Environment;
 
-import java.jswf.components.http.routeHandlerComponent.Route;
-import java.jswf.components.http.routeHandlerComponent.Request;
-import java.jswf.components.http.routeHandlerComponent.Response;
-import java.jswf.components.http.statiFilesServerComponent.StaticFileRoute;
+import jswf.components.http.routeHandlerComponent.Route;
+import jswf.components.http.routeHandlerComponent.Request;
+import jswf.components.http.routeHandlerComponent.Response;
+import jswf.components.http.statiFilesServerComponent.StaticFileRoute;
 
 import jswf.framework.RouteHandlerInterface;
 import org.eclipse.jetty.http.HttpHeader;

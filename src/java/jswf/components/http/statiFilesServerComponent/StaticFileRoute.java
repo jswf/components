@@ -1,6 +1,6 @@
-package java.jswf.components.http.statiFilesServerComponent;
+package jswf.components.http.statiFilesServerComponent;
 
-import java.jswf.components.http.routeHandlerComponent.Route;
+import jswf.components.http.routeHandlerComponent.Route;
 import jswf.framework.RouteHandlerInterface;
 
 import java.util.ArrayList;

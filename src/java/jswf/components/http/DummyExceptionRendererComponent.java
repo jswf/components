@@ -1,9 +1,9 @@
-package java.jswf.components.http;
+package jswf.components.http;
 
 import jswf.framework.Environment;
 
-import java.jswf.components.http.exceptions.RouteNotFoundException;
-import java.jswf.components.http.routeHandlerComponent.Response;
+import jswf.components.http.exceptions.RouteNotFoundException;
+import jswf.components.http.routeHandlerComponent.Response;
 
 import org.eclipse.jetty.http.HttpStatus;
 
