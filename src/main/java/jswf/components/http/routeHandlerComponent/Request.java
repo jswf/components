@@ -14,6 +14,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Request implements RequestInterface {
 
@@ -23,6 +25,9 @@ public class Request implements RequestInterface {
 
     protected boolean isBodyExtracted = false;
     protected String body;
+
+    protected boolean isQueryParametersExtracted = false;
+    Map<String, String> queryParameters;
 
     public Request(HttpServletRequest request) {
         httpServletRequest = request;
@@ -70,6 +75,34 @@ public class Request implements RequestInterface {
         }
 
         return body;
+    }
+
+    //// TODO: 11/11/2016 Support escaped characters
+    // TODO: 11/11/2016 Support arrays
+    public Map<String, String> getQueryParameters() {
+        if (!isQueryParametersExtracted) {
+            queryParameters = new HashMap<>();
+            String queryString = this.getQueryString();
+
+            if (queryString != null) {
+                String[] params = queryString.split("&");
+                for (String param : params) {
+                    String[] parts = param.split("=");
+                    String name = parts[0];
+                    String value = "";
+                    if (parts.length > 1) {
+                        value = parts[1];
+                    }
+                    queryParameters.put(name, value);
+                }
+            }
+        }
+
+        return queryParameters;
+    }
+
+    public String getQueryParameter(String parameter) {
+        return getQueryParameters().get(parameter);
     }
 
 

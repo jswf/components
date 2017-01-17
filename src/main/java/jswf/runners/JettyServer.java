@@ -2,12 +2,12 @@ package jswf.runners;
 
 import jswf.components.http.routeHandlerComponent.Request;
 import jswf.components.http.routeHandlerComponent.Response;
-
-import jswf.framework.*;
-
-import org.eclipse.jetty.server.Server;
+import jswf.framework.ComponentInterface;
+import jswf.framework.Environment;
+import jswf.framework.RunnerInterface;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.AbstractHandler;
+import org.eclipse.jetty.server.handler.ContextHandler;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,9 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 
-public class Http extends AbstractHandler implements RunnerInterface {
+public class JettyServer extends AbstractHandler implements RunnerInterface {
 
-    protected Server server;
+    protected org.eclipse.jetty.server.Server server;
 
     protected String hostname = "localhost";
 
@@ -29,15 +29,15 @@ public class Http extends AbstractHandler implements RunnerInterface {
 
     protected HashMap<String, Object> services;
 
-    public Http() {
-        server = new Server();
+    public JettyServer() {
+        server = new org.eclipse.jetty.server.Server();
     }
 
     public String getHostname() {
         return hostname;
     }
 
-    public Http setHostname(String hostname) {
+    public JettyServer setHostname(String hostname) {
         this.hostname = hostname;
 
         return this;
@@ -47,13 +47,13 @@ public class Http extends AbstractHandler implements RunnerInterface {
         return port;
     }
 
-    public Http setPort(int port) {
+    public JettyServer setPort(int port) {
         this.port = port;
 
         return this;
     }
 
-    public Server getServer() {
+    public org.eclipse.jetty.server.Server getServer() {
         return server;
     }
 
@@ -61,13 +61,17 @@ public class Http extends AbstractHandler implements RunnerInterface {
         this.component = component;
         this.services = services;
 
-        ServerConnector http = new ServerConnector(this.server);
-        http.setHost(hostname);
-        http.setPort(port);
-        http.setIdleTimeout(idleTimeOut);
+        ServerConnector connector = new ServerConnector(this.server);
+        connector.setHost(hostname);
+        connector.setPort(port);
+        connector.setIdleTimeout(idleTimeOut);
 
-        server.addConnector(http);
-        server.setHandler(this);
+        ContextHandler context = new ContextHandler();
+        context.setContextPath("/");
+        context.setHandler(this);
+
+        server.addConnector(connector);
+        server.setHandler(context);
 
         server.start();
         server.join();
@@ -78,6 +82,7 @@ public class Http extends AbstractHandler implements RunnerInterface {
         environment
                 .setRequest(new Request(request))
                 .setResponse(new Response(response))
+                .setCustom("baseRequest", baseRequest)
         ;
 
         component.invoke(environment);

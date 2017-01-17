@@ -1,26 +1,23 @@
 package jswf.components.http;
 
+import jswf.components.generic.RequestHandlerInterface;
 import jswf.components.http.exceptions.RouteNotFoundException;
 import jswf.components.http.routeHandlerComponent.Request;
 import jswf.components.http.routeHandlerComponent.Response;
 import jswf.components.http.routeHandlerComponent.Route;
-
-import jswf.framework.*;
-
+import jswf.framework.Environment;
+import jswf.framework.ServiceInterface;
 import org.apache.commons.codec.digest.DigestUtils;
 
-import java.util.*;
+import java.io.InvalidClassException;
+import java.util.ArrayList;
 
-public class RouteHandlerComponent extends AbstractComponent {
-
-    protected List<Route> routes;
-    protected HashMap<String, List<Route>> initializedRoutes;
+public class RouteHandlerComponent extends AbstractRouteBasedComponent implements ServiceInterface {
 
     Environment environment;
 
     public RouteHandlerComponent() {
-        routes = new ArrayList<Route>();
-        initializedRoutes = new HashMap<String, List<Route>>();
+        super();
     }
 
     public void invoke(Environment environment) {
@@ -42,7 +39,14 @@ public class RouteHandlerComponent extends AbstractComponent {
             request.setRoute(route);
 
             try {
-                route.getHandler().handle(this.environment);
+                Class<?> clazz = route.getHandler();
+                Object instance = clazz.newInstance();
+                if (instance instanceof RequestHandlerInterface) {
+                    RequestHandlerInterface handler = (RequestHandlerInterface) instance;
+                    handler.handle(this.environment);
+                } else {
+                    throw new InvalidClassException(clazz.toString() + " must implement jswf.commons.components.generic.RequestHandlerInterface");
+                }
             } catch (Exception e) {
                 environment.setException(e);
             }
@@ -54,7 +58,7 @@ public class RouteHandlerComponent extends AbstractComponent {
         next(environment);
     }
 
-    public RouteHandlerComponent addGet(String name, String path, RouteHandlerInterface handler) {
+    public RouteHandlerComponent addGet(String name, String path, Class<?> handler) {
         ArrayList<String> methods = new ArrayList<>();
         methods.add(Route.METHOD_GET);
 
@@ -64,7 +68,7 @@ public class RouteHandlerComponent extends AbstractComponent {
         return this;
     }
 
-    public RouteHandlerComponent addGet(String path, RouteHandlerInterface handler) {
+    public RouteHandlerComponent addGet(String path, Class<?> handler) {
         ArrayList<String> methods = new ArrayList<>();
         methods.add(Route.METHOD_GET);
 
@@ -74,7 +78,7 @@ public class RouteHandlerComponent extends AbstractComponent {
         return this;
     }
 
-    public RouteHandlerComponent addPost(String name, String path, RouteHandlerInterface handler) {
+    public RouteHandlerComponent addPost(String name, String path, Class<?> handler) {
         ArrayList<String> methods = new ArrayList<>();
         methods.add(Route.METHOD_POST);
 
@@ -84,7 +88,7 @@ public class RouteHandlerComponent extends AbstractComponent {
         return this;
     }
 
-    public RouteHandlerComponent addPost(String path, RouteHandlerInterface handler) {
+    public RouteHandlerComponent addPost(String path, Class<?> handler) {
         ArrayList<String> methods = new ArrayList<>();
         methods.add(Route.METHOD_POST);
 
@@ -94,7 +98,7 @@ public class RouteHandlerComponent extends AbstractComponent {
         return this;
     }
 
-    public RouteHandlerComponent addPut(String name, String path, RouteHandlerInterface handler) {
+    public RouteHandlerComponent addPut(String name, String path, Class<?> handler) {
         ArrayList<String> methods = new ArrayList<>();
         methods.add(Route.METHOD_PUT);
 
@@ -104,7 +108,7 @@ public class RouteHandlerComponent extends AbstractComponent {
         return this;
     }
 
-    public RouteHandlerComponent addPut(String path, RouteHandlerInterface handler) {
+    public RouteHandlerComponent addPut(String path, Class<?> handler) {
         ArrayList<String> methods = new ArrayList<>();
         methods.add(Route.METHOD_PUT);
 
@@ -114,7 +118,7 @@ public class RouteHandlerComponent extends AbstractComponent {
         return this;
     }
 
-    public RouteHandlerComponent addDelete(String name, String path, RouteHandlerInterface handler) {
+    public RouteHandlerComponent addDelete(String name, String path, Class<?> handler) {
         ArrayList<String> methods = new ArrayList<>();
         methods.add(Route.METHOD_DELETE);
 
@@ -124,7 +128,7 @@ public class RouteHandlerComponent extends AbstractComponent {
         return this;
     }
 
-    public RouteHandlerComponent addDelete(String path, RouteHandlerInterface handler) {
+    public RouteHandlerComponent addDelete(String path, Class<?> handler) {
         ArrayList<String> methods = new ArrayList<>();
         methods.add(Route.METHOD_DELETE);
 
@@ -134,7 +138,7 @@ public class RouteHandlerComponent extends AbstractComponent {
         return this;
     }
 
-    public RouteHandlerComponent addAny(String name, String path, RouteHandlerInterface handler) {
+    public RouteHandlerComponent addAny(String name, String path, Class<?> handler) {
         ArrayList<String> methods = new ArrayList<>();
         methods.add(Route.METHOD_ANY);
 
@@ -144,7 +148,7 @@ public class RouteHandlerComponent extends AbstractComponent {
         return this;
     }
 
-    public RouteHandlerComponent addAny(String path, RouteHandlerInterface handler) {
+    public RouteHandlerComponent addAny(String path, Class<?> handler) {
         ArrayList<String> methods = new ArrayList<>();
         methods.add(Route.METHOD_ANY);
 
@@ -154,37 +158,8 @@ public class RouteHandlerComponent extends AbstractComponent {
         return this;
     }
 
-    public void addRoute(Route route) {
-        routes.add(route);
+    @Override
+    public String getServiceName() {
+        return this.getClass().toString();
     }
-
-    protected Route getRouteMatch(String method, String uri) {
-        if (!initializedRoutes.isEmpty()) {
-            List<Route> routesForMethod = initializedRoutes.get(method);
-            if (routesForMethod != null && !routesForMethod.isEmpty()) {
-                for (Route route: routesForMethod) {
-                    if (route.matches(uri)) {
-                        return route;
-                    }
-                }
-            }
-        }
-
-        for (Route route: routes) {
-            if (route.matchesMethod(method) && route.matches(uri)) {
-                List<Route> routesForMethod = initializedRoutes.get(method);
-                if (routesForMethod == null) {
-                    routesForMethod = new ArrayList<>();
-                    initializedRoutes.put(method, routesForMethod);
-                }
-
-                routesForMethod.add(route);
-
-                return route;
-            }
-        }
-
-        return null;
-    }
-
 }

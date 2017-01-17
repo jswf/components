@@ -49,6 +49,12 @@ public class Response implements ResponseInterface {
 
     public void addContent(String content) throws IOException {
         httpServletResponse.getWriter().write(content);
+        httpServletResponse.setStatus(200);
+    }
+
+    public void addContent(String content, int statusCode) throws IOException {
+        httpServletResponse.getWriter().write(content);
+        httpServletResponse.setStatus(statusCode);
     }
 
     public PrintWriter getWriter() throws IOException {
@@ -126,5 +132,7 @@ public class Response implements ResponseInterface {
     public int getBufferSize() {
         return httpServletResponse.getBufferSize();
     }
+
+
 
 }
