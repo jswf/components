@@ -34,9 +34,16 @@ public class LogRequestComponent extends AbstractComponent {
         Exception environmentException = environment.getException();
         if (environmentException != null) {
             System.out.println(initialTimestamp + " | Internal Exception {");
-            System.out.println("              | Class: " + environmentException.getClass());
-            System.out.println("              | Message: " + environmentException.getMessage());
-            System.out.println("              | Internal Exception }");
+            System.out.println("              |  Class: " + environmentException.getClass());
+            System.out.println("              |  Message: " + environmentException.getMessage());
+            System.out.println("              |  Stack Trace: { ");
+            for (StackTraceElement element: environmentException.getStackTrace()) {
+            System.out.println("              |  Line: " + element.getLineNumber() + ", File: " + element.getFileName());
+            System.out.println("              |  Class: " + element.getClassName() + ", Method: " + element.getMethodName());
+            System.out.println("              |  ---------------------------------------------------------------------------- ");
+            }
+            System.out.println("              |  }");
+            System.out.println("              | }");
         }
 
         int statusCode = response.getStatus();
