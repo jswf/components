@@ -54,7 +54,7 @@
         <mockito.version>1.10.19</mockito.version>
         <commons-codec.version>1.10</commons-codec.version>
         <slf4j.version>1.7.13</slf4j.version>
-        <jswf.framework.version>3213b2f12059c8843ef870a295343587bacaf000</jswf.framework.version>
+        <jswf.framework.version>c15bd948cd07ea8a7038bb5aa3853d6b0bb314a1</jswf.framework.version>
     </properties>
 
     <repositories>
