@@ -1,10 +1,12 @@
 package jswf.components.http.staticFilesServerComponent;
 
+import jswf.components.generic.EnvironmentStatus;
 import jswf.components.generic.RequestHandlerInterface;
 import jswf.components.http.routeHandlerComponent.Request;
 import jswf.components.http.routeHandlerComponent.Response;
 import jswf.framework.Environment;
 import org.eclipse.jetty.http.HttpHeader;
+import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.server.HttpOutput;
 
@@ -37,12 +39,15 @@ public class StaticFileHandler implements RequestHandlerInterface {
             response.addHeader(HttpHeader.LAST_MODIFIED.toString(), lastModified);
             response.setContentType(mimeTypes.getMimeByExtension(file.getPath()));
             response.setContentLength(Math.toIntExact(file.length()));
+            response.setStatus(HttpStatus.OK_200);
 
             httpOutputStream.sendContent(fileInputStream);
 
             httpOutputStream.close();
             fileInputStream.close();
         }
+
+        environment.setStatus(EnvironmentStatus.REQUEST_HANDLED);
     }
 
 }

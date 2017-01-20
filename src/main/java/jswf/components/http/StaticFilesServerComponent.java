@@ -2,11 +2,13 @@ package jswf.components.http;
 
 import jswf.components.generic.EnvironmentStatus;
 import jswf.components.http.routeHandlerComponent.Request;
+import jswf.components.http.routeHandlerComponent.Response;
 import jswf.components.http.routeHandlerComponent.Route;
 import jswf.components.http.staticFilesServerComponent.StaticFileHandler;
 import jswf.components.http.staticFilesServerComponent.StaticFileRoute;
 import jswf.framework.Environment;
 import jswf.framework.ServiceInterface;
+import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.util.URIUtil;
 
@@ -86,6 +88,7 @@ public class StaticFilesServerComponent extends AbstractRouteBasedComponent impl
         }
 
         Request request = (Request) environment.getRequest();
+        Response response = (Response) environment.getResponse();
 
         StaticFileRoute route = (StaticFileRoute) this.getRouteMatch(request.getMethod(), request.getRequestURI());
 
@@ -120,8 +123,13 @@ public class StaticFilesServerComponent extends AbstractRouteBasedComponent impl
                     throw new InvalidClassException(clazz.toString() + " must implement " + StaticFileHandler.class);
                 }
             } catch (Exception e) {
-                if (!(e instanceof FileNotFoundException)) {
-                    environment.setException(e);
+                environment.setStatus(EnvironmentStatus.REQUEST_HANDLED);
+                environment.setException(e);
+
+                response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR_500);
+
+                if (e instanceof FileNotFoundException) {
+                    response.setStatus(HttpStatus.NOT_FOUND_404);
                 }
 
                 next(environment);
