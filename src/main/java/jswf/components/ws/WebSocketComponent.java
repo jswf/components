@@ -1,5 +1,6 @@
 package jswf.components.ws;
 
+import jswf.components.generic.EnvironmentStatus;
 import jswf.components.http.AbstractRouteBasedComponent;
 import jswf.components.http.routeHandlerComponent.Request;
 import jswf.components.http.routeHandlerComponent.Response;
@@ -8,6 +9,7 @@ import jswf.components.ws.webSocketComponent.CustomSocketInterface;
 import jswf.components.ws.webSocketComponent.CustomWebSocketServerFactory;
 import jswf.framework.Environment;
 import jswf.framework.ServiceInterface;
+
 import org.eclipse.jetty.io.MappedByteBufferPool;
 import org.eclipse.jetty.websocket.api.WebSocketBehavior;
 import org.eclipse.jetty.websocket.api.WebSocketPolicy;
@@ -15,6 +17,7 @@ import org.eclipse.jetty.websocket.api.WebSocketPolicy;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InvalidClassException;
@@ -35,6 +38,16 @@ public class WebSocketComponent extends AbstractRouteBasedComponent implements S
     }
 
     public void invoke(Environment environment) {
+        if (environment.isStatus(EnvironmentStatus.REQUEST_HANDLED)) {
+            next(environment);
+            return;
+        }
+
+        if (environment.hasException()) {
+            next(environment);
+            return;
+        }
+
         Request request = (Request) environment.getRequest();
 
         String uri = request.getRequestURI();
@@ -73,7 +86,7 @@ public class WebSocketComponent extends AbstractRouteBasedComponent implements S
         if (CustomSocketInterface.class.isAssignableFrom(clazz)) {
             webSocketFactory.register(route.getHandler());
         } else {
-            throw new InvalidClassException(clazz.toString() + " must implement jswf.commons.components.ws.webSocketComponent.CustomSocketInterface");
+            throw new InvalidClassException(clazz.toString() + " must implement " + CustomSocketInterface.class.getName());
         }
 
         HttpServletRequest servletRequest = request.getHttpServletRequest();
@@ -103,7 +116,7 @@ public class WebSocketComponent extends AbstractRouteBasedComponent implements S
 
     @Override
     public String getServiceName() {
-        return this.getClass().toString();
+        return this.getClass().getName();
     }
 
 }

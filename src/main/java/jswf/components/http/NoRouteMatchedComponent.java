@@ -20,7 +20,7 @@ public class NoRouteMatchedComponent extends AbstractRouteBasedComponent impleme
 
     @Override
     public String getServiceName() {
-        return this.getClass().toString();
+        return this.getClass().getName();
     }
 
 }

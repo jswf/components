@@ -1,5 +1,6 @@
 package jswf.components.http;
 
+import jswf.components.generic.EnvironmentStatus;
 import jswf.components.http.routeHandlerComponent.Request;
 import jswf.components.http.routeHandlerComponent.Route;
 import jswf.components.http.staticFilesServerComponent.StaticFileHandler;
@@ -74,6 +75,16 @@ public class StaticFilesServerComponent extends AbstractRouteBasedComponent impl
     }
 
     public void invoke(Environment environment) {
+        if (environment.isStatus(EnvironmentStatus.REQUEST_HANDLED)) {
+            next(environment);
+            return;
+        }
+
+        if (environment.hasException()) {
+            next(environment);
+            return;
+        }
+
         Request request = (Request) environment.getRequest();
 
         StaticFileRoute route = (StaticFileRoute) this.getRouteMatch(request.getMethod(), request.getRequestURI());
@@ -122,7 +133,7 @@ public class StaticFilesServerComponent extends AbstractRouteBasedComponent impl
 
     @Override
     public String getServiceName() {
-        return this.getClass().toString();
+        return this.getClass().getName();
     }
 
 }

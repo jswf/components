@@ -1,5 +1,6 @@
 package jswf.components.http;
 
+import jswf.components.generic.EnvironmentStatus;
 import jswf.components.generic.RequestHandlerInterface;
 import jswf.components.http.exceptions.RouteNotFoundException;
 import jswf.components.http.routeHandlerComponent.Request;
@@ -21,6 +22,16 @@ public class RouteHandlerComponent extends AbstractRouteBasedComponent implement
     }
 
     public void invoke(Environment environment) {
+        if (environment.isStatus(EnvironmentStatus.REQUEST_HANDLED)) {
+            next(environment);
+            return;
+        }
+
+        if (environment.hasException()) {
+            next(environment);
+            return;
+        }
+
         this.environment = environment;
 
         Request request = (Request) environment.getRequest();
@@ -45,7 +56,7 @@ public class RouteHandlerComponent extends AbstractRouteBasedComponent implement
                     RequestHandlerInterface handler = (RequestHandlerInterface) instance;
                     handler.handle(this.environment);
                 } else {
-                    throw new InvalidClassException(clazz.toString() + " must implement jswf.commons.components.generic.RequestHandlerInterface");
+                    throw new InvalidClassException(clazz.toString() + " must implement " + RequestHandlerInterface.class.getName());
                 }
             } catch (Exception e) {
                 environment.setException(e);
@@ -160,6 +171,6 @@ public class RouteHandlerComponent extends AbstractRouteBasedComponent implement
 
     @Override
     public String getServiceName() {
-        return this.getClass().toString();
+        return this.getClass().getName();
     }
 }
