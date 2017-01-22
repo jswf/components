@@ -10,6 +10,11 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 
+/**
+ * The component logs the uri, schema and method for the request.
+ * Then the uri, time taken and response code for the response.
+ * It also logs any exception that has been passed through the environment.
+ */
 public class LogRequestComponent extends AbstractComponent {
 
     private static final Logger logger = LoggerFactory.getLogger("LogRequestComponent");
@@ -38,9 +43,7 @@ public class LogRequestComponent extends AbstractComponent {
             System.out.println("              |  Message: " + environmentException.getMessage());
             System.out.println("              |  Stack Trace: { ");
             for (StackTraceElement element: environmentException.getStackTrace()) {
-            System.out.println("              |  Line: " + element.getLineNumber() + ", File: " + element.getFileName());
-            System.out.println("              |  Class: " + element.getClassName() + ", Method: " + element.getMethodName());
-            System.out.println("              |  ---------------------------------------------------------------------------- ");
+                System.out.println("              |   (" + element.getLineNumber() + ") " + element.getClassName() + "::" + element.getMethodName());
             }
             System.out.println("              |  }");
             System.out.println("              | }");

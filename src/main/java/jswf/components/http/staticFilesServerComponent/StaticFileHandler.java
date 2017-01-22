@@ -5,6 +5,7 @@ import jswf.components.generic.RequestHandlerInterface;
 import jswf.components.http.routeHandlerComponent.Request;
 import jswf.components.http.routeHandlerComponent.Response;
 import jswf.framework.Environment;
+
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.http.MimeTypes;
@@ -17,14 +18,20 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * StaticFileServerComponent route handler.
+ */
 public class StaticFileHandler implements RequestHandlerInterface {
+
+    public static final String FILE = "staticFileServer.file";
+    public static final String MIME_TYPES = "staticFileServer.mimeTypes";
 
     public void handle(Environment environment) throws Exception {
         Request request = (Request) environment.getRequest();
         Response response = (Response) environment.getResponse();
 
-        File file = (File) environment.getCustom("staticFileServer.file");
-        MimeTypes mimeTypes = (MimeTypes) environment.getCustom("staticFileServer.mimeTypes");
+        File file = (File) environment.getCustom(StaticFileHandler.FILE);
+        MimeTypes mimeTypes = (MimeTypes) environment.getCustom(StaticFileHandler.MIME_TYPES);
 
         String lastModified = DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.ofInstant(Instant.ofEpochMilli(file.lastModified()), ZoneId.of("GMT")));
 

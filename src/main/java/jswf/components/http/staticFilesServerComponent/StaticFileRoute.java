@@ -4,6 +4,9 @@ import jswf.components.http.routeHandlerComponent.Route;
 
 import java.util.ArrayList;
 
+/**
+ * StaticFileServerComponent route definition.
+ */
 public class StaticFileRoute extends Route {
 
     protected String path;
