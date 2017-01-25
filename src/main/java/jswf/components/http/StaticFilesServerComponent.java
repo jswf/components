@@ -143,7 +143,6 @@ public class StaticFilesServerComponent extends AbstractRouteBasedComponent impl
         }
 
         Request request = (Request) environment.getRequest();
-        Response response = (Response) environment.getResponse();
 
         StaticFileRoute route = (StaticFileRoute) this.getRouteMatch(request.getMethod(), request.getRequestURI());
 
@@ -181,6 +180,7 @@ public class StaticFilesServerComponent extends AbstractRouteBasedComponent impl
                 environment.setStatus(EnvironmentStatus.REQUEST_HANDLED);
                 environment.setException(e);
 
+                Response response = (Response) environment.getResponse();
                 response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR_500);
 
                 if (e instanceof FileNotFoundException) {
