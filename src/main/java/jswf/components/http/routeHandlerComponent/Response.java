@@ -95,11 +95,15 @@ public class Response implements ResponseInterface {
         httpServletResponse.sendRedirect(location);
     }
 
-    public void setDateHeader(String name, long date) {
-        httpServletResponse.setDateHeader(name, date);
+    public void addHeader(String name, String value) {
+        httpServletResponse.addHeader(name, value);
     }
 
-    public void addDateHeader(String name, long date) {
+    public void addHeader(String name, int value) {
+        httpServletResponse.addIntHeader(name, value);
+    }
+
+    public void addHeader(String name, long date) {
         httpServletResponse.addDateHeader(name, date);
     }
 
@@ -107,16 +111,12 @@ public class Response implements ResponseInterface {
         httpServletResponse.setHeader(name, value);
     }
 
-    public void addHeader(String name, String value) {
-        httpServletResponse.addHeader(name, value);
-    }
-
     public void setHeader(String name, int value) {
         httpServletResponse.setIntHeader(name, value);
     }
 
-    public void addHeader(String name, int value) {
-        httpServletResponse.addIntHeader(name, value);
+    public void setHeader(String name, long value) {
+        httpServletResponse.setDateHeader(name, value);
     }
 
     public String getHeader(String name) {
