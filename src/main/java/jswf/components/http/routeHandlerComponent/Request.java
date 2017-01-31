@@ -207,6 +207,12 @@ public class Request implements RequestInterface {
         return httpServletRequest.getPart(name);
     }
 
+    public Request setAttribute(String name, Object obj) {
+        httpServletRequest.setAttribute(name, obj);
+
+        return this;
+    }
+
     public Object getAttribute(String name) {
         return httpServletRequest.getAttribute(name);
     }
@@ -233,6 +239,16 @@ public class Request implements RequestInterface {
 
     public ServletInputStream getInputStream() throws IOException {
         return httpServletRequest.getInputStream();
+    }
+
+    public Request setCharacterEncoding(String encoding) throws Exception {
+        httpServletRequest.setCharacterEncoding(encoding);
+
+        return this;
+    }
+
+    public String getCharacterEncoding() {
+        return httpServletRequest.getCharacterEncoding();
     }
 
 }
