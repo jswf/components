@@ -55,11 +55,13 @@ public class RouteHandlerComponent extends AbstractRouteBasedComponent implement
                 if (instance instanceof RequestHandlerInterface) {
                     RequestHandlerInterface handler = (RequestHandlerInterface) instance;
                     handler.handle(this.environment);
+                    environment.setStatus(EnvironmentStatus.REQUEST_HANDLED);
                 } else {
                     throw new InvalidClassException(clazz.toString() + " must implement " + RequestHandlerInterface.class.getName());
                 }
             } catch (Exception e) {
                 environment.setException(e);
+                environment.setStatus(EnvironmentStatus.REQUEST_HANDLED);
             }
         } else {
             RouteNotFoundException exception = new RouteNotFoundException("Route "+uri+" not found.");
