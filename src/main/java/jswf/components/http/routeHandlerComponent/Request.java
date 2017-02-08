@@ -105,6 +105,13 @@ public class Request implements RequestInterface {
         return getQueryParameters().get(parameter);
     }
 
+    public String getParameter(String name) {
+        return httpServletRequest.getParameter(name);
+    }
+
+    public Map<String, String[]> getParameters(String name) {
+        return httpServletRequest.getParameterMap();
+    }
 
     //Exposing the HttpServletRequest methods
     public String getRequestURI() {

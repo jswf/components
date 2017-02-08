@@ -156,7 +156,7 @@ public class StaticFilesServerComponent extends AbstractRouteBasedComponent impl
                 File file = new File(path);
 
                 if (!file.exists()) {
-                    throw new FileNotFoundException("Static file [" + path + "] does not exists.");
+                    throw new FileNotFoundException("Static file [" + path + "] does not exist.");
                 }
 
                 String fileName = file.getName();

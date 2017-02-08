@@ -29,7 +29,8 @@ public class WebSocketComponent extends AbstractRouteBasedComponent implements S
 
     public WebSocketComponent addRoute(String uri, String name, Class<?> handler) {
         ArrayList<String> methods = new ArrayList<>();
-        methods.add(Route.METHOD_ANY);
+        methods.add(Route.METHOD_GET);
+        methods.add(Route.METHOD_POST);
 
         Route route = new Route(methods, name, uri, handler);
         addRoute(route);
