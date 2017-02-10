@@ -11,8 +11,11 @@ import jswf.framework.ServiceInterface;
 import org.eclipse.jetty.http.HttpStatus;
 
 import java.io.InvalidClassException;
+import java.util.HashMap;
 
 public class ResponseContentCacheComponent extends AbstractComponent implements ServiceInterface {
+
+    private HashMap<String, Object> services;
 
     private CacheStrategyInterface cacheStrategy;
 
@@ -88,6 +91,11 @@ public class ResponseContentCacheComponent extends AbstractComponent implements 
     @Override
     public String getServiceName() {
         return this.getClass().getName();
+    }
+
+    @Override
+    public void setServices(HashMap<String, Object> services) {
+        this.services = services;
     }
 
 }

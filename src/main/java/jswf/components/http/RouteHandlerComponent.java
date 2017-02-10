@@ -12,10 +12,11 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.InvalidClassException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class RouteHandlerComponent extends AbstractRouteBasedComponent implements ServiceInterface {
 
-    Environment environment;
+    private HashMap<String, Object> services;
 
     public RouteHandlerComponent() {
         super();
@@ -32,10 +33,7 @@ public class RouteHandlerComponent extends AbstractRouteBasedComponent implement
             return;
         }
 
-        this.environment = environment;
-
         Request request = (Request) environment.getRequest();
-        Response response = (Response) environment.getResponse();
 
         String uri = request.getRequestURI();
         if (!uri.endsWith("/")) {
@@ -54,7 +52,7 @@ public class RouteHandlerComponent extends AbstractRouteBasedComponent implement
                 Object instance = clazz.newInstance();
                 if (instance instanceof RequestHandlerInterface) {
                     RequestHandlerInterface handler = (RequestHandlerInterface) instance;
-                    handler.handle(this.environment);
+                    handler.handle(environment);
                     environment.setStatus(EnvironmentStatus.REQUEST_HANDLED);
                 } else {
                     throw new InvalidClassException(clazz.toString() + " must implement " + RequestHandlerInterface.class.getName());
@@ -174,5 +172,10 @@ public class RouteHandlerComponent extends AbstractRouteBasedComponent implement
     @Override
     public String getServiceName() {
         return this.getClass().getName();
+    }
+
+    @Override
+    public void setServices(HashMap<String, Object> services) {
+        this.services = services;
     }
 }

@@ -22,8 +22,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InvalidClassException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class WebSocketComponent extends AbstractRouteBasedComponent implements ServiceInterface {
+
+    private HashMap<String, Object> services;
 
     public WebSocketComponent() {}
 
@@ -120,4 +123,8 @@ public class WebSocketComponent extends AbstractRouteBasedComponent implements S
         return this.getClass().getName();
     }
 
+    @Override
+    public void setServices(HashMap<String, Object> services) {
+        this.services = services;
+    }
 }

@@ -19,11 +19,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InvalidClassException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Component to serve static files.
  */
 public class StaticFilesServerComponent extends AbstractRouteBasedComponent implements ServiceInterface {
+
+    private HashMap<String, Object> services;
 
     private String basePath;
 
@@ -197,6 +200,11 @@ public class StaticFilesServerComponent extends AbstractRouteBasedComponent impl
     @Override
     public String getServiceName() {
         return this.getClass().getName();
+    }
+
+    @Override
+    public void setServices(HashMap<String, Object> services) {
+        this.services = services;
     }
 
 }

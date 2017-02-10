@@ -12,7 +12,11 @@ import jswf.framework.Environment;
 import jswf.framework.ServiceInterface;
 import org.eclipse.jetty.http.HttpStatus;
 
+import java.util.HashMap;
+
 public class AssetsAssemblerComponent extends AbstractComponent implements ServiceInterface {
+
+    private HashMap<String, Object> services;
 
     protected String basePath;
 
@@ -191,9 +195,14 @@ public class AssetsAssemblerComponent extends AbstractComponent implements Servi
         return this.getClass().getName();
     }
 
+    @Override
+    public void setServices(HashMap<String, Object> services) {
+        this.services = services;
+    }
+
     private ResponseContentCacheComponent getResponseContentCacheComponent(Environment environment) {
         if (!triedToGrabResponseContentCacheComponent) {
-            responseContentCacheComponent = (ResponseContentCacheComponent) environment.getService(ResponseContentCacheComponent.class.getName());
+            responseContentCacheComponent = (ResponseContentCacheComponent) services.get(ResponseContentCacheComponent.class.getName());
             triedToGrabResponseContentCacheComponent = true;
         }
 
