@@ -8,7 +8,6 @@ import jswf.framework.RunnerInterface;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.server.handler.gzip.GzipHandler;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -58,8 +57,6 @@ public class JettyServer extends AbstractHandler implements RunnerInterface {
         return server;
     }
 
-    GzipHandler gzipHandler;
-
     public void run(ComponentInterface component, HashMap<String, Object> services) throws Exception {
         this.component = component;
         this.services = services;
@@ -72,11 +69,6 @@ public class JettyServer extends AbstractHandler implements RunnerInterface {
         ContextHandler context = new ContextHandler();
         context.setContextPath("/");
         context.setHandler(this);
-
-        gzipHandler = new GzipHandler();
-        gzipHandler.setIncludedMimeTypes("text/html", "text/plain", "text/xml", "text/css", "application/javascript", "text/javascript");
-//        gzipHandler.setHandler(myHandler);
-//        handlerList.addHandler(gzipHandler);
 
         server.addConnector(connector);
         server.setHandler(context);
@@ -94,9 +86,6 @@ public class JettyServer extends AbstractHandler implements RunnerInterface {
         ;
 
         component.invoke(environment);
-
-        gzipHandler.handle(target, baseRequest, request, response);
-
 
         baseRequest.setHandled(true);
     }
