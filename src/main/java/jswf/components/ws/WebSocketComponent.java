@@ -78,12 +78,14 @@ public class WebSocketComponent extends AbstractRouteBasedComponent implements S
         }
     }
 
-    public boolean handle(Environment environment, Route route) throws ServletException, IOException {
+    public boolean handle(Environment environment, Route route) throws Exception {
         Request request = (Request) environment.getRequest();
         Response response = (Response) environment.getResponse();
 
+        org.eclipse.jetty.server.Request baseRequest = (org.eclipse.jetty.server.Request) environment.getCustom("baseRequest");
+
         WebSocketPolicy policy = new WebSocketPolicy(WebSocketBehavior.SERVER);
-        CustomWebSocketServerFactory webSocketFactory = new CustomWebSocketServerFactory(policy, new MappedByteBufferPool());
+        CustomWebSocketServerFactory webSocketFactory = new CustomWebSocketServerFactory(baseRequest.getContext(), policy, new MappedByteBufferPool());
         webSocketFactory.setEnvironment(environment);
 
         Class<?> clazz = route.getHandler();
@@ -95,11 +97,10 @@ public class WebSocketComponent extends AbstractRouteBasedComponent implements S
 
         HttpServletRequest servletRequest = request.getHttpServletRequest();
         HttpServletResponse servletResponse = response.getHttpServletResponse();
-        org.eclipse.jetty.server.Request baseRequest = (org.eclipse.jetty.server.Request) environment.getCustom("baseRequest");
 
         if (webSocketFactory.isUpgradeRequest(servletRequest, servletResponse))
         {
-            webSocketFactory.init(baseRequest.getContext());
+            webSocketFactory.start();
 
             // We have an upgrade request
             if (webSocketFactory.acceptWebSocket(servletRequest, servletResponse)) {

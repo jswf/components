@@ -7,12 +7,14 @@ import org.eclipse.jetty.websocket.server.WebSocketServerFactory;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeResponse;
 
+import javax.servlet.ServletContext;
+
 public class CustomWebSocketServerFactory extends WebSocketServerFactory {
 
     Environment environment;
 
-    public CustomWebSocketServerFactory(WebSocketPolicy policy, ByteBufferPool bufferPool) {
-        super(policy, bufferPool);
+    public CustomWebSocketServerFactory(ServletContext context, WebSocketPolicy policy, ByteBufferPool bufferPool) {
+        super(context, policy, bufferPool);
     }
 
     public Environment getEnvironment() {
