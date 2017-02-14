@@ -1,6 +1,5 @@
 package jswf.components.generic;
 
-import jswf.components.http.routeHandlerComponent.Route;
 import jswf.framework.RouteInterface;
 
 import java.util.ArrayList;
@@ -9,30 +8,38 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public abstract class AbstractRoute implements RouteInterface {
+public class HttpRoute implements RouteInterface {
 
     public static final String METHOD_GET = "GET";
     public static final String METHOD_POST = "POST";
     public static final String METHOD_PUT = "PUT";
-    public static final String METHOD_DELETE = "DELETE";
-    public static final String METHOD_OPTIONS = "OPTIONS";
     public static final String METHOD_PATCH = "PATCH";
+    public static final String METHOD_DELETE = "DELETE";
+    public static final String METHOD_COPY = "COPY";
     public static final String METHOD_HEAD = "HEAD";
+    public static final String METHOD_OPTIONS = "OPTIONS";
+    public static final String METHOD_LINK = "LINK";
+    public static final String METHOD_UNLINK = "UNLINK";
+    public static final String METHOD_PURGE = "PURGE";
+    public static final String METHOD_LOCK = "LOCK";
+    public static final String METHOD_UNLOCK = "UNLOCK";
+    public static final String METHOD_PROPFIND = "PROPFIND";
+    public static final String METHOD_VIEW = "VIEW";
     public static final String METHOD_ANY = "ANY";
 
     public static final String PROTOCOL_HTTP = "HTTP";
     public static final String PROTOCOL_HTTPS = "HTTPS";
-    public static final String PROTOCOL_ANY = "HTTPS";
+    public static final String PROTOCOL_ANY = "ANY";
 
     protected String name;
 
-    protected String path;
-
     protected String uri;
+
+    protected String path;
 
     protected ArrayList<String> methods;
 
-    protected String protocol = Route.PROTOCOL_ANY;
+    protected String protocol = HttpRoute.PROTOCOL_ANY;
 
     protected HashMap<String, String> uriParameters;
 
@@ -42,7 +49,16 @@ public abstract class AbstractRoute implements RouteInterface {
 
     protected Class<?> handler;
 
-    public AbstractRoute setName(String name) {
+    public HttpRoute(ArrayList<String> methods, String name, String uri, Class<?> handler) {
+        this.uriParameters = new HashMap<String, String>();
+
+        this.setName(name);
+        this.setHandler(handler);
+        this.setMethods(methods);
+        this.setUri(uri);
+    }
+
+    public HttpRoute setName(String name) {
         this.name = name;
 
         return this;
@@ -56,8 +72,8 @@ public abstract class AbstractRoute implements RouteInterface {
         return uri;
     }
 
-    public AbstractRoute setUri(String uri) {
-        this.path = uri;
+    public HttpRoute setUri(String uri) {
+        setPath(uri);
         uri = normalizeUri(uri);
 
         this.uri = uri;
@@ -66,11 +82,17 @@ public abstract class AbstractRoute implements RouteInterface {
         return this;
     }
 
+    public HttpRoute setPath(String path) {
+        this.path = path;
+
+        return this;
+    }
+
     public String getPath() {
         return path;
     }
 
-    public AbstractRoute setMethods(ArrayList<String> methods) {
+    public HttpRoute setMethods(ArrayList<String> methods) {
         this.methods = methods;
 
         return this;
@@ -81,13 +103,18 @@ public abstract class AbstractRoute implements RouteInterface {
     }
 
 
+    public HttpRoute setCompiledPath(Pattern compiledPath) {
+        this.compiledPath = compiledPath;
+
+        return this;
+    }
 
     public Pattern getCompiledPath() {
         return compiledPath;
     }
 
-    public AbstractRoute setCompiledPath(Pattern compiledPath) {
-        this.compiledPath = compiledPath;
+    public HttpRoute setHandler(Class<?> handler) {
+        this.handler = handler;
 
         return this;
     }
@@ -96,11 +123,6 @@ public abstract class AbstractRoute implements RouteInterface {
         return handler;
     }
 
-    public AbstractRoute setHandler(Class<?> handler) {
-        this.handler = handler;
-
-        return this;
-    }
 
     public boolean matchesMethod(String method) {
         return (methods.contains(method) || methods.contains(METHOD_ANY));

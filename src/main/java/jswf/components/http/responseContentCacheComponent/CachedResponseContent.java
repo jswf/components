@@ -1,6 +1,6 @@
 package jswf.components.http.responseContentCacheComponent;
 
-import jswf.components.http.routeHandlerComponent.Response;
+import jswf.components.generic.HttpResponse;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -107,23 +107,23 @@ public class CachedResponseContent {
         return headers;
     }
 
-    public CachedResponseContent generateFromResponse(Response response) throws Exception {
-        statusCode = response.getStatus();
+    public CachedResponseContent generateFromResponse(HttpResponse httpResponse) throws Exception {
+        statusCode = httpResponse.getStatus();
 
-        Collection<String> headers = response.getHeaderNames();
+        Collection<String> headers = httpResponse.getHeaderNames();
         for (String header:headers) {
-            addHeader(header, response.getHeader(header));
+            addHeader(header, httpResponse.getHeader(header));
         }
 
         return this;
     }
 
-    public CachedResponseContent buildResponse(Response response) throws Exception {
+    public CachedResponseContent buildResponse(HttpResponse httpResponse) throws Exception {
         for (Map.Entry<String, String> entry: headers.entrySet()) {
-            response.setHeader(entry.getKey(), entry.getValue());
+            httpResponse.setHeader(entry.getKey(), entry.getValue());
         }
 
-        response.addContent(content, statusCode);
+        httpResponse.addContent(content, statusCode);
 
         return this;
     }

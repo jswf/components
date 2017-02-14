@@ -1,15 +1,11 @@
 package jswf.components.http;
 
 import jswf.components.generic.EnvironmentStatus;
-import jswf.components.http.routeHandlerComponent.Request;
-import jswf.components.http.routeHandlerComponent.Response;
-import jswf.components.http.routeHandlerComponent.Route;
+import jswf.components.generic.HttpRequest;
+import jswf.components.generic.HttpResponse;
+import jswf.components.generic.HttpRoute;
 import jswf.components.http.staticFilesServerComponent.StaticFileHandler;
-import jswf.components.http.staticFilesServerComponent.StaticFileRoute;
-
 import jswf.framework.Environment;
-import jswf.framework.ServiceInterface;
-
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.http.MimeTypes;
@@ -19,14 +15,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InvalidClassException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Component to serve static files.
  */
-public class StaticFilesServerComponent extends AbstractRouteBasedComponent implements ServiceInterface {
-
-    private HashMap<String, Object> services;
+public class StaticFilesServerComponent extends AbstractRouteBasedComponent {
 
     private String basePath;
 
@@ -39,7 +32,6 @@ public class StaticFilesServerComponent extends AbstractRouteBasedComponent impl
 
         allowedFileExtensions = new ArrayList<>();
 
-        allowedFileExtensions.add("html");
         allowedFileExtensions.add("css");
         allowedFileExtensions.add("map");
         allowedFileExtensions.add("js");
@@ -57,9 +49,13 @@ public class StaticFilesServerComponent extends AbstractRouteBasedComponent impl
         allowedFileExtensions.add("woff");
         allowedFileExtensions.add("woff2");
 
+        allowedFileExtensions.add("html");
         allowedFileExtensions.add("txt");
         allowedFileExtensions.add("xml");
         allowedFileExtensions.add("csv");
+        allowedFileExtensions.add("doc");
+        allowedFileExtensions.add("docx");
+        allowedFileExtensions.add("pdf");
 
         allowedFileExtensions.add("mp4");
         allowedFileExtensions.add("mpg");
@@ -96,15 +92,18 @@ public class StaticFilesServerComponent extends AbstractRouteBasedComponent impl
      * $uri could be a regular expression. Use: /{(.*)*} to match the path structure plus the filename and extension.
      *
      * @param path Path to the files to be served
-     * @param uri Uri to match against the Request uri
+     * @param uri Uri to match against the HttpRequest uri
      * @return
      */
     public StaticFilesServerComponent addPath(String path, String uri) {
         ArrayList<String> methods = new ArrayList<>();
-        methods.add(Route.METHOD_GET);
-        methods.add(Route.METHOD_HEAD);
+        methods.add(HttpRoute.METHOD_GET);
+        methods.add(HttpRoute.METHOD_HEAD);
 
-        addRoute(new StaticFileRoute(methods, path, uri, StaticFileHandler.class));
+        HttpRoute route = new HttpRoute(methods, path, uri, StaticFileHandler.class);
+        route.setPath(path);
+
+        addRoute(route);
 
         return this;
     }
@@ -145,16 +144,16 @@ public class StaticFilesServerComponent extends AbstractRouteBasedComponent impl
             return;
         }
 
-        Request request = (Request) environment.getRequest();
+        HttpRequest httpRequest = (HttpRequest) environment.getRequest();
 
-        StaticFileRoute route = (StaticFileRoute) this.getRouteMatch(request.getMethod(), request.getRequestURI());
+        HttpRoute route = this.getRouteMatch(httpRequest.getMethod(), httpRequest.getRequestURI());
 
         if (route != null) {
-            request.setRoute(route);
+            httpRequest.setRoute(route);
 
             try {
                 String path = URIUtil.addPaths(basePath, route.getPath());
-                path = URIUtil.addPaths(path, request.getRequestURI());
+                path = URIUtil.addPaths(path, httpRequest.getRequestURI());
 
                 File file = new File(path);
 
@@ -183,11 +182,11 @@ public class StaticFilesServerComponent extends AbstractRouteBasedComponent impl
                 environment.setStatus(EnvironmentStatus.REQUEST_HANDLED);
                 environment.setException(e);
 
-                Response response = (Response) environment.getResponse();
-                response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR_500);
+                HttpResponse httpResponse = (HttpResponse) environment.getResponse();
+                httpResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR_500);
 
                 if (e instanceof FileNotFoundException) {
-                    response.setStatus(HttpStatus.NOT_FOUND_404);
+                    httpResponse.setStatus(HttpStatus.NOT_FOUND_404);
                 }
 
                 next(environment);
@@ -200,11 +199,6 @@ public class StaticFilesServerComponent extends AbstractRouteBasedComponent impl
     @Override
     public String getServiceName() {
         return this.getClass().getName();
-    }
-
-    @Override
-    public void setServices(HashMap<String, Object> services) {
-        this.services = services;
     }
 
 }

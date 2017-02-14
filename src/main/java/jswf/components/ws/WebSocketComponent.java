@@ -1,42 +1,33 @@
 package jswf.components.ws;
 
 import jswf.components.generic.EnvironmentStatus;
+import jswf.components.generic.HttpRequest;
+import jswf.components.generic.HttpResponse;
+import jswf.components.generic.HttpRoute;
 import jswf.components.http.AbstractRouteBasedComponent;
-import jswf.components.http.routeHandlerComponent.Request;
-import jswf.components.http.routeHandlerComponent.Response;
-import jswf.components.http.routeHandlerComponent.Route;
 import jswf.components.ws.webSocketComponent.CustomSocketInterface;
 import jswf.components.ws.webSocketComponent.CustomWebSocketServerFactory;
 import jswf.framework.Environment;
-import jswf.framework.ServiceInterface;
-
 import org.eclipse.jetty.io.MappedByteBufferPool;
 import org.eclipse.jetty.websocket.api.WebSocketBehavior;
 import org.eclipse.jetty.websocket.api.WebSocketPolicy;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InvalidClassException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
-public class WebSocketComponent extends AbstractRouteBasedComponent implements ServiceInterface {
-
-    private HashMap<String, Object> services;
+public class WebSocketComponent extends AbstractRouteBasedComponent {
 
     public WebSocketComponent() {}
 
     public WebSocketComponent addRoute(String uri, String name, Class<?> handler) {
         ArrayList<String> methods = new ArrayList<>();
-        methods.add(Route.METHOD_GET);
-        methods.add(Route.METHOD_POST);
+        methods.add(HttpRoute.METHOD_GET);
+        methods.add(HttpRoute.METHOD_POST);
 
-        Route route = new Route(methods, name, uri, handler);
-        addRoute(route);
+        addRoute(new HttpRoute(methods, name, uri, handler));
 
         return this;
     }
@@ -52,15 +43,15 @@ public class WebSocketComponent extends AbstractRouteBasedComponent implements S
             return;
         }
 
-        Request request = (Request) environment.getRequest();
+        HttpRequest httpRequest = (HttpRequest) environment.getRequest();
 
-        String uri = request.getRequestURI();
-        String method = request.getMethod();
+        String uri = httpRequest.getRequestURI();
+        String method = httpRequest.getMethod();
 
-        Route route = this.getRouteMatch(method, uri);
+        HttpRoute route = this.getRouteMatch(method, uri);
 
         if (route != null) {
-            request.setRoute(route);
+            httpRequest.setRoute(route);
 
             try {
                 if (!handle(environment, route)) {
@@ -78,9 +69,9 @@ public class WebSocketComponent extends AbstractRouteBasedComponent implements S
         }
     }
 
-    public boolean handle(Environment environment, Route route) throws Exception {
-        Request request = (Request) environment.getRequest();
-        Response response = (Response) environment.getResponse();
+    public boolean handle(Environment environment, HttpRoute route) throws Exception {
+        HttpRequest httpRequest = (HttpRequest) environment.getRequest();
+        HttpResponse httpResponse = (HttpResponse) environment.getResponse();
 
         org.eclipse.jetty.server.Request baseRequest = (org.eclipse.jetty.server.Request) environment.getCustom("baseRequest");
 
@@ -95,21 +86,21 @@ public class WebSocketComponent extends AbstractRouteBasedComponent implements S
             throw new InvalidClassException(clazz.toString() + " must implement " + CustomSocketInterface.class.getName());
         }
 
-        HttpServletRequest servletRequest = request.getHttpServletRequest();
-        HttpServletResponse servletResponse = response.getHttpServletResponse();
+        HttpServletRequest servletRequest = httpRequest.getHttpServletRequest();
+        HttpServletResponse servletResponse = httpResponse.getHttpServletResponse();
 
         if (webSocketFactory.isUpgradeRequest(servletRequest, servletResponse))
         {
             webSocketFactory.start();
 
-            // We have an upgrade request
+            // We have an upgrade httpRequest
             if (webSocketFactory.acceptWebSocket(servletRequest, servletResponse)) {
                 return true;
             }
 
-            // If we reach this point, it means we had an incoming request to upgrade
+            // If we reach this point, it means we had an incoming httpRequest to upgrade
             // but it was either not a proper websocket upgrade, or it was possibly rejected
-            // due to incoming request constraints (controlled by WebSocketCreator)
+            // due to incoming httpRequest constraints (controlled by WebSocketCreator)
             if (servletResponse.isCommitted()) {
                 // not much we can do at this point.
                 return true;
@@ -124,8 +115,4 @@ public class WebSocketComponent extends AbstractRouteBasedComponent implements S
         return this.getClass().getName();
     }
 
-    @Override
-    public void setServices(HashMap<String, Object> services) {
-        this.services = services;
-    }
 }

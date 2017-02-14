@@ -1,22 +1,15 @@
 package jswf.components.http;
 
 import jswf.components.generic.EnvironmentStatus;
+import jswf.components.generic.HttpRequest;
+import jswf.components.generic.HttpRoute;
 import jswf.components.generic.RequestHandlerInterface;
-import jswf.components.http.exceptions.RouteNotFoundException;
-import jswf.components.http.routeHandlerComponent.Request;
-import jswf.components.http.routeHandlerComponent.Response;
-import jswf.components.http.routeHandlerComponent.Route;
+import jswf.components.generic.exceptions.RouteNotFoundException;
 import jswf.framework.Environment;
-import jswf.framework.ServiceInterface;
-import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.InvalidClassException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
-public class RouteHandlerComponent extends AbstractRouteBasedComponent implements ServiceInterface {
-
-    private HashMap<String, Object> services;
+public class RouteHandlerComponent extends AbstractRouteBasedComponent {
 
     public RouteHandlerComponent() {
         super();
@@ -33,19 +26,19 @@ public class RouteHandlerComponent extends AbstractRouteBasedComponent implement
             return;
         }
 
-        Request request = (Request) environment.getRequest();
+        HttpRequest httpRequest = (HttpRequest) environment.getRequest();
 
-        String uri = request.getRequestURI();
+        String uri = httpRequest.getRequestURI();
         if (!uri.endsWith("/")) {
             uri += "/";
         }
 
-        String method = request.getMethod();
+        String method = httpRequest.getMethod();
 
-        Route route = this.getRouteMatch(method, uri);
+        HttpRoute route = this.getRouteMatch(method, uri);
 
         if (route != null) {
-            request.setRoute(route);
+            httpRequest.setRoute(route);
 
             try {
                 Class<?> clazz = route.getHandler();
@@ -62,111 +55,11 @@ public class RouteHandlerComponent extends AbstractRouteBasedComponent implement
                 environment.setStatus(EnvironmentStatus.REQUEST_HANDLED);
             }
         } else {
-            RouteNotFoundException exception = new RouteNotFoundException("Route "+uri+" not found.");
+            RouteNotFoundException exception = new RouteNotFoundException("Route ".concat(uri).concat(" not found."));
             environment.setException(exception);
         }
 
         next(environment);
-    }
-
-    public RouteHandlerComponent addGet(String name, String path, Class<?> handler) {
-        ArrayList<String> methods = new ArrayList<>();
-        methods.add(Route.METHOD_GET);
-
-        Route route = new Route(methods, name, path, handler);
-        addRoute(route);
-
-        return this;
-    }
-
-    public RouteHandlerComponent addGet(String path, Class<?> handler) {
-        ArrayList<String> methods = new ArrayList<>();
-        methods.add(Route.METHOD_GET);
-
-        Route route = new Route(methods, DigestUtils.md5Hex(path), path, handler);
-        addRoute(route);
-
-        return this;
-    }
-
-    public RouteHandlerComponent addPost(String name, String path, Class<?> handler) {
-        ArrayList<String> methods = new ArrayList<>();
-        methods.add(Route.METHOD_POST);
-
-        Route route = new Route(methods, name, path, handler);
-        addRoute(route);
-
-        return this;
-    }
-
-    public RouteHandlerComponent addPost(String path, Class<?> handler) {
-        ArrayList<String> methods = new ArrayList<>();
-        methods.add(Route.METHOD_POST);
-
-        Route route = new Route(methods, DigestUtils.md5Hex(path), path, handler);
-        addRoute(route);
-
-        return this;
-    }
-
-    public RouteHandlerComponent addPut(String name, String path, Class<?> handler) {
-        ArrayList<String> methods = new ArrayList<>();
-        methods.add(Route.METHOD_PUT);
-
-        Route route = new Route(methods, name, path, handler);
-        addRoute(route);
-
-        return this;
-    }
-
-    public RouteHandlerComponent addPut(String path, Class<?> handler) {
-        ArrayList<String> methods = new ArrayList<>();
-        methods.add(Route.METHOD_PUT);
-
-        Route route = new Route(methods, DigestUtils.md5Hex(path), path, handler);
-        addRoute(route);
-
-        return this;
-    }
-
-    public RouteHandlerComponent addDelete(String name, String path, Class<?> handler) {
-        ArrayList<String> methods = new ArrayList<>();
-        methods.add(Route.METHOD_DELETE);
-
-        Route route = new Route(methods, name, path, handler);
-        addRoute(route);
-
-        return this;
-    }
-
-    public RouteHandlerComponent addDelete(String path, Class<?> handler) {
-        ArrayList<String> methods = new ArrayList<>();
-        methods.add(Route.METHOD_DELETE);
-
-        Route route = new Route(methods, DigestUtils.md5Hex(path), path, handler);
-        addRoute(route);
-
-        return this;
-    }
-
-    public RouteHandlerComponent addAny(String name, String path, Class<?> handler) {
-        ArrayList<String> methods = new ArrayList<>();
-        methods.add(Route.METHOD_ANY);
-
-        Route route = new Route(methods, name, path, handler);
-        addRoute(route);
-
-        return this;
-    }
-
-    public RouteHandlerComponent addAny(String path, Class<?> handler) {
-        ArrayList<String> methods = new ArrayList<>();
-        methods.add(Route.METHOD_ANY);
-
-        Route route = new Route(methods, DigestUtils.md5Hex(path), path, handler);
-        addRoute(route);
-
-        return this;
     }
 
     @Override
@@ -174,8 +67,4 @@ public class RouteHandlerComponent extends AbstractRouteBasedComponent implement
         return this.getClass().getName();
     }
 
-    @Override
-    public void setServices(HashMap<String, Object> services) {
-        this.services = services;
-    }
 }

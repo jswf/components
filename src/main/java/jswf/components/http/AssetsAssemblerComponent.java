@@ -1,12 +1,12 @@
 package jswf.components.http;
 
+import jswf.components.generic.EnvironmentStatus;
+import jswf.components.generic.HttpRequest;
+import jswf.components.generic.HttpResponse;
 import jswf.components.http.assetsAssemblerComponent.AbstractAssetAssembler;
 import jswf.components.http.assetsAssemblerComponent.CssAssetAssembler;
 import jswf.components.http.assetsAssemblerComponent.JsAssetAssembler;
 import jswf.components.http.responseContentCacheComponent.CachedResponseContent;
-import jswf.components.generic.EnvironmentStatus;
-import jswf.components.http.routeHandlerComponent.Request;
-import jswf.components.http.routeHandlerComponent.Response;
 import jswf.framework.AbstractComponent;
 import jswf.framework.Environment;
 import jswf.framework.ServiceInterface;
@@ -129,10 +129,10 @@ public class AssetsAssemblerComponent extends AbstractComponent implements Servi
             return;
         }
 
-        Request request = (Request) environment.getRequest();
+        HttpRequest httpRequest = (HttpRequest) environment.getRequest();
 
-        if (request.getMethod().equals("GET")) {
-            String requestUri = request.getRequestURI();
+        if (httpRequest.getMethod().equals("GET")) {
+            String requestUri = httpRequest.getRequestURI();
 
             AbstractAssetAssembler assembler = null;
             String assemblerPath = null;
@@ -153,32 +153,32 @@ public class AssetsAssemblerComponent extends AbstractComponent implements Servi
             }
 
             if (assembler != null) {
-                String query = request.getQueryParameter("files");
+                String query = httpRequest.getQueryParameter("files");
                 if (query != null) {
-                    Response response = (Response) environment.getResponse();
+                    HttpResponse httpResponse = (HttpResponse) environment.getResponse();
 
                     try {
                         String content = assembler.process(query.split(","), basePath, assemblerPath);
 
                         long contentLength = (long) content.length();
 
-                        response = (Response) environment.getResponse();
-                        response.setHeader("Content-Type", contentType);
-                        response.setHeader("Cache-Control", "max-age=" + browserCacheDurationMinutes);
-                        response.setContentLengthLong(contentLength);
-                        response.addContent(content);
+                        httpResponse = (HttpResponse) environment.getResponse();
+                        httpResponse.setHeader("Content-Type", contentType);
+                        httpResponse.setHeader("Cache-Control", "max-age=" + browserCacheDurationMinutes);
+                        httpResponse.setContentLengthLong(contentLength);
+                        httpResponse.addContent(content);
 
                         if (getResponseContentCacheComponent(environment) != null) {
                             CachedResponseContent responseContent = new CachedResponseContent();
                             responseContent
-                                    .generateFromResponse(response)
+                                    .generateFromResponse(httpResponse)
                                     .setCacheDuration(serverCacheDurationMinutes)
                                     .setContent(content)
                             ;
-                            responseContentCacheComponent.addContent(ResponseContentCacheComponent.generateKey(request), responseContent);
+                            responseContentCacheComponent.addContent(ResponseContentCacheComponent.generateKey(httpRequest), responseContent);
                         }
                     } catch (Exception e) {
-                        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR_500);
+                        httpResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR_500);
                         environment.setException(e);
                     }
 

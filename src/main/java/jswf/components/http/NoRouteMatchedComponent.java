@@ -1,35 +1,21 @@
 package jswf.components.http;
 
-import jswf.components.http.exceptions.RouteNotFoundException;
-import jswf.components.http.routeHandlerComponent.Response;
+import jswf.components.generic.HttpResponse;
+import jswf.components.generic.exceptions.RouteNotFoundException;
+import jswf.framework.AbstractComponent;
 import jswf.framework.Environment;
-import jswf.framework.ServiceInterface;
 
-import java.util.HashMap;
-
-public class NoRouteMatchedComponent extends AbstractRouteBasedComponent implements ServiceInterface {
-
-    private HashMap<String, Object> services;
+public class NoRouteMatchedComponent extends AbstractComponent {
 
     @Override
     public void invoke(Environment environment) {
         Exception e = environment.getException();
 
         if (e instanceof RouteNotFoundException) {
-            Response response = (Response) environment.getResponse();
-            response.setStatus(404);
+            HttpResponse httpResponse = (HttpResponse) environment.getResponse();
+            httpResponse.setStatus(404);
             next(environment);
         }
-    }
-
-    @Override
-    public String getServiceName() {
-        return this.getClass().getName();
-    }
-
-    @Override
-    public void setServices(HashMap<String, Object> services) {
-        this.services = services;
     }
 
 }

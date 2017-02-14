@@ -1,7 +1,7 @@
 package jswf.components.http;
 
-import jswf.components.http.routeHandlerComponent.Request;
-import jswf.components.http.routeHandlerComponent.Response;
+import jswf.components.generic.HttpRequest;
+import jswf.components.generic.HttpResponse;
 import jswf.framework.AbstractComponent;
 import jswf.framework.Environment;
 import org.eclipse.jetty.http.HttpStatus;
@@ -20,19 +20,19 @@ public class LogRequestComponent extends AbstractComponent {
     private static final Logger logger = LoggerFactory.getLogger("LogRequestComponent");
 
     public void invoke(Environment environment) {
-        Request request = (Request) environment.getRequest();
-        Response response = (Response) environment.getResponse();
+        HttpRequest httpRequest = (HttpRequest) environment.getRequest();
+        HttpResponse httpResponse = (HttpResponse) environment.getResponse();
 
         long initialTimestamp = System.currentTimeMillis();
 
         String protocol = "";
 
         try {
-            URL url = new URL(request.getRequestURL().toString());
+            URL url = new URL(httpRequest.getRequestURL().toString());
             protocol = url.getProtocol();
         } catch (Exception e) {}
 
-        System.out.println(initialTimestamp + " | -> " + request.getRequestURI() + " | " + protocol.toUpperCase() + " | " + request.getMethod());
+        System.out.println(initialTimestamp + " | -> " + httpRequest.getRequestURI() + " | " + protocol.toUpperCase() + " | " + httpRequest.getMethod());
 
         next(environment);
 
@@ -49,9 +49,9 @@ public class LogRequestComponent extends AbstractComponent {
             System.out.println("              | }");
         }
 
-        int statusCode = response.getStatus();
+        int statusCode = httpResponse.getStatus();
         long finalTimestamp = System.currentTimeMillis();
-        System.out.println(finalTimestamp + " | <- " + request.getRequestURI() + " | " + (finalTimestamp - initialTimestamp) + "ms | " +  statusCode + " " + HttpStatus.getMessage(response.getStatus()));
+        System.out.println(finalTimestamp + " | <- " + httpRequest.getRequestURI() + " | " + (finalTimestamp - initialTimestamp) + "ms | " +  statusCode + " " + HttpStatus.getMessage(httpResponse.getStatus()));
     }
 
 }

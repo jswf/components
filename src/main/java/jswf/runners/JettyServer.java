@@ -1,7 +1,7 @@
 package jswf.runners;
 
-import jswf.components.http.routeHandlerComponent.Request;
-import jswf.components.http.routeHandlerComponent.Response;
+import jswf.components.generic.HttpRequest;
+import jswf.components.generic.HttpResponse;
 import jswf.framework.ComponentInterface;
 import jswf.framework.Environment;
 import jswf.framework.RunnerInterface;
@@ -80,8 +80,8 @@ public class JettyServer extends AbstractHandler implements RunnerInterface {
     public void handle(String target, org.eclipse.jetty.server.Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         Environment environment = new Environment(services);
         environment
-                .setRequest(new Request(request))
-                .setResponse(new Response(response))
+                .setRequest(new HttpRequest(request))
+                .setResponse(new HttpResponse(response))
                 .setCustom("baseRequest", baseRequest)
         ;
 

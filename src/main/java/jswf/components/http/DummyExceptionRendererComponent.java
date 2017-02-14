@@ -1,7 +1,7 @@
 package jswf.components.http;
 
-import jswf.components.http.exceptions.RouteNotFoundException;
-import jswf.components.http.routeHandlerComponent.Response;
+import jswf.components.generic.HttpResponse;
+import jswf.components.generic.exceptions.RouteNotFoundException;
 import jswf.framework.Environment;
 import org.eclipse.jetty.http.HttpStatus;
 
@@ -13,20 +13,20 @@ public class DummyExceptionRendererComponent extends RouteHandlerComponent {
     public DummyExceptionRendererComponent() {}
 
     public void invoke(Environment environment) {
-        Response response = (Response) environment.getResponse();
+        HttpResponse httpResponse = (HttpResponse) environment.getResponse();
 
         Exception exception = environment.getException();
 
         if (exception != null) {
             if (exception instanceof RouteNotFoundException) {
-                response.setStatus(HttpStatus.NOT_FOUND_404);
+                httpResponse.setStatus(HttpStatus.NOT_FOUND_404);
             } else {
-                response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR_500);
+                httpResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR_500);
             }
 
             try {
                 String responseContent;
-                responseContent = response.getStatus() + ", " + exception.getMessage() + "\n\n";
+                responseContent = httpResponse.getStatus() + ", " + exception.getMessage() + "\n\n";
                 responseContent += "Stack Trace: \n";
 
                 StringWriter sw = new StringWriter();
@@ -35,7 +35,7 @@ public class DummyExceptionRendererComponent extends RouteHandlerComponent {
 
                 responseContent += sw.toString();
 
-                response.addContent(responseContent);
+                httpResponse.addContent(responseContent);
             } catch (Exception e) {}
         }
     }

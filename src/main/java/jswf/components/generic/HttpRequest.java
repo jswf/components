@@ -1,4 +1,4 @@
-package jswf.components.http.routeHandlerComponent;
+package jswf.components.generic;
 
 import jswf.framework.RequestInterface;
 import jswf.framework.RouteInterface;
@@ -17,7 +17,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Request implements RequestInterface {
+public class HttpRequest implements RequestInterface {
 
     protected HttpServletRequest httpServletRequest;
 
@@ -29,7 +29,7 @@ public class Request implements RequestInterface {
     protected boolean isQueryParametersExtracted = false;
     Map<String, String> queryParameters;
 
-    public Request(HttpServletRequest request) {
+    public HttpRequest(HttpServletRequest request) {
         httpServletRequest = request;
     }
 
@@ -41,7 +41,7 @@ public class Request implements RequestInterface {
         return route;
     }
 
-    public Request setRoute(RouteInterface route) {
+    public HttpRequest setRoute(RouteInterface route) {
         this.route = route;
 
         return this;
@@ -214,7 +214,7 @@ public class Request implements RequestInterface {
         return httpServletRequest.getPart(name);
     }
 
-    public Request setAttribute(String name, Object obj) {
+    public HttpRequest setAttribute(String name, Object obj) {
         httpServletRequest.setAttribute(name, obj);
 
         return this;
@@ -248,7 +248,7 @@ public class Request implements RequestInterface {
         return httpServletRequest.getInputStream();
     }
 
-    public Request setCharacterEncoding(String encoding) throws Exception {
+    public HttpRequest setCharacterEncoding(String encoding) throws Exception {
         httpServletRequest.setCharacterEncoding(encoding);
 
         return this;

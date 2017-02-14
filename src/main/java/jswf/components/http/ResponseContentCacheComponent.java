@@ -1,10 +1,10 @@
 package jswf.components.http;
 
+import jswf.components.generic.EnvironmentStatus;
+import jswf.components.generic.HttpRequest;
+import jswf.components.generic.HttpResponse;
 import jswf.components.http.responseContentCacheComponent.CacheStrategyInterface;
 import jswf.components.http.responseContentCacheComponent.CachedResponseContent;
-import jswf.components.generic.EnvironmentStatus;
-import jswf.components.http.routeHandlerComponent.Request;
-import jswf.components.http.routeHandlerComponent.Response;
 import jswf.framework.AbstractComponent;
 import jswf.framework.Environment;
 import jswf.framework.ServiceInterface;
@@ -51,9 +51,9 @@ public class ResponseContentCacheComponent extends AbstractComponent implements 
             return;
         }
 
-        Request request = (Request) environment.getRequest();
+        HttpRequest httpRequest = (HttpRequest) environment.getRequest();
 
-        String key = generateKey(request);
+        String key = generateKey(httpRequest);
         CachedResponseContent responseContent = cacheStrategy.restore(key);
 
         if (responseContent != null) {
@@ -63,12 +63,12 @@ public class ResponseContentCacheComponent extends AbstractComponent implements 
                 return;
             }
 
-            Response response = (Response) environment.getResponse();
+            HttpResponse httpResponse = (HttpResponse) environment.getResponse();
 
             try {
-                responseContent.buildResponse(response);
+                responseContent.buildResponse(httpResponse);
             } catch (Exception e) {
-                response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR_500);
+                httpResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR_500);
                 environment.setException(e);
             }
 
@@ -84,8 +84,8 @@ public class ResponseContentCacheComponent extends AbstractComponent implements 
         return this;
     }
 
-    public static String generateKey(Request request) {
-        return request.getRequestURI() + "?" + request.getQueryString();
+    public static String generateKey(HttpRequest httpRequest) {
+        return httpRequest.getRequestURI() + "?" + httpRequest.getQueryString();
     }
 
     @Override

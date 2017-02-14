@@ -1,4 +1,4 @@
-package jswf.components.http.routeHandlerComponent;
+package jswf.components.generic;
 
 import jswf.framework.ResponseInterface;
 
@@ -9,11 +9,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 
-public class Response implements ResponseInterface {
+public class HttpResponse implements ResponseInterface {
 
     protected HttpServletResponse httpServletResponse;
 
-    public Response(HttpServletResponse response) {
+    public HttpResponse(HttpServletResponse response) {
         httpServletResponse = response;
     }
 
@@ -21,7 +21,7 @@ public class Response implements ResponseInterface {
         return httpServletResponse;
     }
 
-    public Response setStatus(int status) {
+    public HttpResponse setStatus(int status) {
         httpServletResponse.setStatus(status);
 
         return this;
@@ -31,7 +31,7 @@ public class Response implements ResponseInterface {
         return httpServletResponse.getStatus();
     }
 
-    public Response setContentType(String contentType) {
+    public HttpResponse setContentType(String contentType) {
         httpServletResponse.setContentType(contentType);
 
         return this;
@@ -41,13 +41,13 @@ public class Response implements ResponseInterface {
         return httpServletResponse.getContentType();
     }
 
-    public Response setContentLength(int length) {
+    public HttpResponse setContentLength(int length) {
         httpServletResponse.setContentLength(length);
 
         return this;
     }
 
-    public Response setContentLengthLong(long length) {
+    public HttpResponse setContentLengthLong(long length) {
         httpServletResponse.setContentLengthLong(length);
 
         return this;

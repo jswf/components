@@ -1,34 +1,35 @@
 package jswf.components.http;
 
-import jswf.components.http.routeHandlerComponent.Route;
+import jswf.components.generic.HttpRoute;
 import jswf.framework.AbstractComponent;
-import jswf.framework.Environment;
+import jswf.framework.ServiceInterface;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-abstract public class AbstractRouteBasedComponent extends AbstractComponent {
+abstract public class AbstractRouteBasedComponent extends AbstractComponent implements ServiceInterface {
 
-    protected List<Route> routes;
-    protected HashMap<String, List<Route>> initializedRoutes;
+    protected HashMap<String, Object> services;
 
-    Environment environment;
+    protected List<HttpRoute> routes;
+    protected HashMap<String, List<HttpRoute>> initializedRoutes;
 
     public AbstractRouteBasedComponent() {
-        routes = new ArrayList<Route>();
-        initializedRoutes = new HashMap<String, List<Route>>();
+        routes = new ArrayList<HttpRoute>();
+        initializedRoutes = new HashMap<String, List<HttpRoute>>();
     }
 
-    public void addRoute(Route route) {
+    public void addRoute(HttpRoute route) {
         routes.add(route);
     }
 
-    protected Route getRouteMatch(String method, String uri) {
+    public HttpRoute getRouteMatch(String method, String uri) {
         if (!initializedRoutes.isEmpty()) {
-            List<Route> routesForMethod = initializedRoutes.get(method);
+            List<HttpRoute> routesForMethod = initializedRoutes.get(method);
             if (routesForMethod != null && !routesForMethod.isEmpty()) {
-                for (Route route: routesForMethod) {
+                for (HttpRoute route: routesForMethod) {
                     if (route.matches(uri)) {
                         return route;
                     }
@@ -36,13 +37,9 @@ abstract public class AbstractRouteBasedComponent extends AbstractComponent {
             }
         }
 
-        for (Route route: routes) {
+        for (HttpRoute route: routes) {
             if (route.matchesMethod(method) && route.matches(uri)) {
-                List<Route> routesForMethod = initializedRoutes.get(method);
-                if (routesForMethod == null) {
-                    routesForMethod = new ArrayList<>();
-                    initializedRoutes.put(method, routesForMethod);
-                }
+                List<HttpRoute> routesForMethod = initializedRoutes.computeIfAbsent(method, k -> new ArrayList<>());
 
                 routesForMethod.add(route);
 
@@ -53,7 +50,113 @@ abstract public class AbstractRouteBasedComponent extends AbstractComponent {
         return null;
     }
 
-    public List<Route> getRoutes() {
+    public List<HttpRoute> getRoutes() {
         return routes;
     }
+
+    public AbstractRouteBasedComponent addGet(String name, String uri, Class<?> handler) {
+        ArrayList<String> methods = new ArrayList<>();
+        methods.add(HttpRoute.METHOD_GET);
+
+        HttpRoute route = new HttpRoute(methods, name, uri, handler);
+        addRoute(route);
+
+        return this;
+    }
+
+    public AbstractRouteBasedComponent addGet(String uri, Class<?> handler) {
+        ArrayList<String> methods = new ArrayList<>();
+        methods.add(HttpRoute.METHOD_GET);
+
+        HttpRoute route = new HttpRoute(methods, DigestUtils.md5Hex(uri), uri, handler);
+        addRoute(route);
+
+        return this;
+    }
+
+    public AbstractRouteBasedComponent addPost(String name, String uri, Class<?> handler) {
+        ArrayList<String> methods = new ArrayList<>();
+        methods.add(HttpRoute.METHOD_POST);
+
+        HttpRoute route = new HttpRoute(methods, name, uri, handler);
+        addRoute(route);
+
+        return this;
+    }
+
+    public AbstractRouteBasedComponent addPost(String uri, Class<?> handler) {
+        ArrayList<String> methods = new ArrayList<>();
+        methods.add(HttpRoute.METHOD_POST);
+
+        HttpRoute route = new HttpRoute(methods, DigestUtils.md5Hex(uri), uri, handler);
+        addRoute(route);
+
+        return this;
+    }
+
+    public AbstractRouteBasedComponent addPut(String name, String uri, Class<?> handler) {
+        ArrayList<String> methods = new ArrayList<>();
+        methods.add(HttpRoute.METHOD_PUT);
+
+        HttpRoute route = new HttpRoute(methods, name, uri, handler);
+        addRoute(route);
+
+        return this;
+    }
+
+    public AbstractRouteBasedComponent addPut(String uri, Class<?> handler) {
+        ArrayList<String> methods = new ArrayList<>();
+        methods.add(HttpRoute.METHOD_PUT);
+
+        HttpRoute route = new HttpRoute(methods, DigestUtils.md5Hex(uri), uri, handler);
+        addRoute(route);
+
+        return this;
+    }
+
+    public AbstractRouteBasedComponent addDelete(String name, String uri, Class<?> handler) {
+        ArrayList<String> methods = new ArrayList<>();
+        methods.add(HttpRoute.METHOD_DELETE);
+
+        HttpRoute route = new HttpRoute(methods, name, uri, handler);
+        addRoute(route);
+
+        return this;
+    }
+
+    public AbstractRouteBasedComponent addDelete(String uri, Class<?> handler) {
+        ArrayList<String> methods = new ArrayList<>();
+        methods.add(HttpRoute.METHOD_DELETE);
+
+        HttpRoute route = new HttpRoute(methods, DigestUtils.md5Hex(uri), uri, handler);
+        addRoute(route);
+
+        return this;
+    }
+
+    public AbstractRouteBasedComponent addAny(String name, String uri, Class<?> handler) {
+        ArrayList<String> methods = new ArrayList<>();
+        methods.add(HttpRoute.METHOD_ANY);
+
+        HttpRoute route = new HttpRoute(methods, name, uri, handler);
+        addRoute(route);
+
+        return this;
+    }
+
+    public AbstractRouteBasedComponent addAny(String uri, Class<?> handler) {
+        ArrayList<String> methods = new ArrayList<>();
+        methods.add(HttpRoute.METHOD_ANY);
+
+        HttpRoute route = new HttpRoute(methods, DigestUtils.md5Hex(uri), uri, handler);
+        addRoute(route);
+
+        return this;
+    }
+
+    @Override
+    public void setServices(HashMap<String, Object> services) {
+        this.services = services;
+    }
+
 }
