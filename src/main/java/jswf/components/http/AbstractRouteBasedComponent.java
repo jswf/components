@@ -11,8 +11,6 @@ import java.util.List;
 
 abstract public class AbstractRouteBasedComponent extends AbstractComponent implements ServiceInterface {
 
-    protected HashMap<String, Object> services;
-
     protected List<HttpRoute> routes;
     protected HashMap<String, List<HttpRoute>> initializedRoutes;
 
@@ -152,11 +150,6 @@ abstract public class AbstractRouteBasedComponent extends AbstractComponent impl
         addRoute(route);
 
         return this;
-    }
-
-    @Override
-    public void setServices(HashMap<String, Object> services) {
-        this.services = services;
     }
 
 }

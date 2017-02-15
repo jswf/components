@@ -1,12 +1,13 @@
 package jswf.components.debug;
 
+import jswf.components.generic.HttpRoute;
 import jswf.components.generic.HttpRequest;
 import jswf.components.generic.HttpResponse;
-import jswf.components.generic.HttpRoute;
 import jswf.components.http.AbstractRouteBasedComponent;
 import jswf.framework.AbstractComponent;
 import jswf.framework.Environment;
 import jswf.framework.ServiceInterface;
+import jswf.framework.ServicesContainer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,14 +32,14 @@ public class DebugComponent extends AbstractComponent {
 
                 // Services
                 httpResponse.addContent("<h3>Services:</h3><br>");
-                HashMap<String, Object> services = environment.getServices();
+                HashMap<String, ServiceInterface> services = ServicesContainer.getServices();
 
                 httpResponse.addContent("<table border='1'>");
                 httpResponse.addContent("<thead><tr>");
                 httpResponse.addContent("<th>Name</th><th>Class</th>");
                 httpResponse.addContent("</tr></thead>");
                 httpResponse.addContent("<tbody>");
-                for (Map.Entry<String, Object> entry : services.entrySet()) {
+                for (Map.Entry<String, ServiceInterface> entry : services.entrySet()) {
                     httpResponse.addContent("<tr><td>" + entry.getKey() + "</td><td>" + entry.getValue().getClass() + "</td></tr>");
                 }
                 httpResponse.addContent("</tbody>");
@@ -55,7 +56,7 @@ public class DebugComponent extends AbstractComponent {
                 httpResponse.addContent("</tr></thead>");
                 httpResponse.addContent("<tbody>");
 
-                for (Map.Entry<String, Object> entry : services.entrySet()) {
+                for (Map.Entry<String, ServiceInterface> entry : services.entrySet()) {
                     ServiceInterface service = (ServiceInterface) entry.getValue();
 
                     if (service instanceof AbstractRouteBasedComponent) {

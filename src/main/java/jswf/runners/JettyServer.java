@@ -13,7 +13,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
 
 public class JettyServer extends AbstractHandler implements RunnerInterface {
 
@@ -26,8 +25,6 @@ public class JettyServer extends AbstractHandler implements RunnerInterface {
     protected int idleTimeOut = 30000;
 
     protected ComponentInterface component;
-
-    protected HashMap<String, Object> services;
 
     public JettyServer() {
         server = new org.eclipse.jetty.server.Server();
@@ -57,9 +54,8 @@ public class JettyServer extends AbstractHandler implements RunnerInterface {
         return server;
     }
 
-    public void run(ComponentInterface component, HashMap<String, Object> services) throws Exception {
+    public void run(ComponentInterface component) throws Exception {
         this.component = component;
-        this.services = services;
 
         ServerConnector connector = new ServerConnector(this.server);
         connector.setHost(hostname);
@@ -78,7 +74,7 @@ public class JettyServer extends AbstractHandler implements RunnerInterface {
     }
 
     public void handle(String target, org.eclipse.jetty.server.Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        Environment environment = new Environment(services);
+        Environment environment = new Environment();
         environment
                 .setRequest(new HttpRequest(request))
                 .setResponse(new HttpResponse(response))

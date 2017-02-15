@@ -30,7 +30,6 @@ public class InMemoryCacheStrategy implements CacheStrategyInterface {
 
         if (content != null) {
             content.updateHits();
-            System.out.println(key + " hits: " + String.valueOf(content.getNumberOfHits()));
         }
 
         return content;
