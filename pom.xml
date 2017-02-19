@@ -55,7 +55,7 @@
         <commons-codec.version>1.10</commons-codec.version>
         <commons-io.version>2.5</commons-io.version>
         <slf4j.version>1.7.13</slf4j.version>
-        <jswf.framework.version>75d52b0259ced321a1373a53545b3f010deba9de</jswf.framework.version>
+        <jswf.framework.version>058c5aeb4f7d5c23838c54ccecbbad46ff005f21</jswf.framework.version>
     </properties>
 
     <repositories>

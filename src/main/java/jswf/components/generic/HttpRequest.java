@@ -258,4 +258,9 @@ public class HttpRequest implements RequestInterface {
         return httpServletRequest.getCharacterEncoding();
     }
 
+    public boolean isAjax() {
+        String header = getHeader("X-Requested-With");
+        return header != null && header.toLowerCase().equals("xmlhttprequest");
+    }
+
 }
