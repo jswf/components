@@ -5,18 +5,16 @@ import jswf.framework.AbstractComponent;
 import jswf.framework.ServiceInterface;
 import org.apache.commons.codec.digest.DigestUtils;
 
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
-import java.util.List;
+import java.util.*;
 
 abstract public class AbstractRouteBasedComponent extends AbstractComponent implements ServiceInterface {
 
     protected List<HttpRoute> routes;
-    protected IdentityHashMap<String, List<HttpRoute>> initializedRoutes;
+    protected Map<String, List<HttpRoute>> initializedRoutes;
 
     public AbstractRouteBasedComponent() {
         routes = new ArrayList<HttpRoute>();
-        initializedRoutes = new IdentityHashMap<String, List<HttpRoute>>();
+        initializedRoutes = new HashMap<>();
     }
 
     public void addRoute(HttpRoute route) {

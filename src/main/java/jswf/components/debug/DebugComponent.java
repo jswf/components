@@ -9,7 +9,6 @@ import jswf.framework.Environment;
 import jswf.framework.ServiceInterface;
 import jswf.framework.ServicesContainer;
 
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +31,7 @@ public class DebugComponent extends AbstractComponent {
 
                 // Services
                 httpResponse.addContent("<h3>Services:</h3><br>");
-                IdentityHashMap<String, ServiceInterface> services = ServicesContainer.getServices();
+                Map<String, ServiceInterface> services = ServicesContainer.getServices();
 
                 httpResponse.addContent("<table border='1'>");
                 httpResponse.addContent("<thead><tr>");

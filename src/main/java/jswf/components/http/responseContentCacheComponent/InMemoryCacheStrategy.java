@@ -1,6 +1,6 @@
 package jswf.components.http.responseContentCacheComponent;
 
-import java.util.IdentityHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 public class InMemoryCacheStrategy implements CacheStrategyInterface {
@@ -8,7 +8,7 @@ public class InMemoryCacheStrategy implements CacheStrategyInterface {
     private Map<String, CachedResponseContent> cache;
 
     public InMemoryCacheStrategy() {
-        cache = new IdentityHashMap<>();
+        cache = new HashMap<>();
     }
 
     @Override

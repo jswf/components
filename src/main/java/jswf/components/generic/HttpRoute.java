@@ -3,7 +3,7 @@ package jswf.components.generic;
 import jswf.framework.RouteInterface;
 
 import java.util.ArrayList;
-import java.util.IdentityHashMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,7 +50,7 @@ public class HttpRoute implements RouteInterface {
     protected Class<?> handler;
 
     public HttpRoute(ArrayList<String> methods, String name, String uri, Class<?> handler) {
-        this.uriParameters = new IdentityHashMap<>();
+        this.uriParameters = new HashMap<>();
 
         this.setName(name);
         this.setHandler(handler);

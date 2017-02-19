@@ -78,7 +78,7 @@ public class HttpRequest implements RequestInterface {
     // TODO: 11/11/2016 Support arrays
     public Map<String, String> getQueryParameters() {
         if (!isQueryParametersExtracted) {
-            queryParameters = new IdentityHashMap<>();
+            queryParameters = new HashMap<>();
             String queryString = this.getQueryString();
 
             if (queryString != null) {
