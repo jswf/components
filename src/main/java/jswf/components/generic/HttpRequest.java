@@ -12,10 +12,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class HttpRequest implements RequestInterface {
 
@@ -81,7 +78,7 @@ public class HttpRequest implements RequestInterface {
     // TODO: 11/11/2016 Support arrays
     public Map<String, String> getQueryParameters() {
         if (!isQueryParametersExtracted) {
-            queryParameters = new HashMap<>();
+            queryParameters = new IdentityHashMap<>();
             String queryString = this.getQueryString();
 
             if (queryString != null) {
