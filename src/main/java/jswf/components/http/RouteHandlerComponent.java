@@ -48,14 +48,20 @@ public class RouteHandlerComponent extends AbstractRouteBasedComponent {
                     handler.handle(environment);
                     environment.setStatus(EnvironmentStatus.REQUEST_HANDLED);
                 } else {
-                    throw new InvalidClassException(clazz.toString() + " must implement " + RequestHandlerInterface.class.getName());
+                    throw new InvalidClassException(
+                            (new StringBuilder(clazz.toString()))
+                                    .append(" must implement ").append(RequestHandlerInterface.class.getName())
+                                    .toString()
+                    );
                 }
             } catch (Exception e) {
                 environment.setException(e);
                 environment.setStatus(EnvironmentStatus.REQUEST_HANDLED);
             }
         } else {
-            RouteNotFoundException exception = new RouteNotFoundException("Route ".concat(uri).concat(" not found."));
+            RouteNotFoundException exception = new RouteNotFoundException(
+                    (new StringBuilder("Route ")).append(uri).append(" not found.").toString()
+            );
             environment.setException(exception);
         }
 
