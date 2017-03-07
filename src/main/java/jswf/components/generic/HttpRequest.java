@@ -106,7 +106,7 @@ public class HttpRequest implements RequestInterface {
         return httpServletRequest.getParameter(name);
     }
 
-    public Map<String, String[]> getParameters(String name) {
+    public Map<String, String[]> getParameters() {
         return httpServletRequest.getParameterMap();
     }
 
