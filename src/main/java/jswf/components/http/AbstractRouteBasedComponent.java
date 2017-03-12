@@ -1,6 +1,7 @@
 package jswf.components.http;
 
 import jswf.components.generic.HttpRoute;
+import jswf.components.generic.exceptions.RouteNotFoundException;
 import jswf.framework.AbstractComponent;
 import jswf.framework.ServiceInterface;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -149,5 +150,23 @@ abstract public class AbstractRouteBasedComponent extends AbstractComponent impl
 
         return this;
     }
+
+    public String generateUri(String routeName) throws Exception {
+        return generateUri(routeName, new HashMap<String, String>());
+    }
+
+    public String generateUri(String routeName, Map<String, String> parameters) throws Exception {
+        for (HttpRoute route: routes) {
+            if (route.getName().equals(routeName)) {
+                return route.generateUri(parameters);
+            }
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Route with name [").append(routeName).append("] was not found in the routes list.");
+        throw new RouteNotFoundException(stringBuilder.toString());
+    }
+
+
 
 }

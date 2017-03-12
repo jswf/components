@@ -1,5 +1,7 @@
 package jswf.components.generic;
 
+import jswf.components.generic.exceptions.InvalidRouteParameterValueException;
+import jswf.components.generic.exceptions.RouteParameterExpectedException;
 import jswf.framework.RouteInterface;
 
 import java.util.ArrayList;
@@ -42,6 +44,8 @@ public class HttpRoute implements RouteInterface {
     protected String protocol = HttpRoute.PROTOCOL_ANY;
 
     protected Map<String, String> uriParameters;
+    protected Map<String, String> uriParametersRegex;
+    protected Map<String, String> uriStaticParametersRegex;
 
     protected Pattern compiledUri;
 
@@ -51,6 +55,8 @@ public class HttpRoute implements RouteInterface {
 
     public HttpRoute(ArrayList<String> methods, String name, String uri, Class<?> handler) {
         this.uriParameters = new HashMap<>();
+        this.uriParametersRegex = new HashMap<>();
+        this.uriStaticParametersRegex = new HashMap<>();
 
         this.setName(name);
         this.setHandler(handler);
@@ -135,7 +141,7 @@ public class HttpRoute implements RouteInterface {
     protected void setCompiledUri(String path) {
         String[] segments = path.split("/");
 
-        String regex = "^/";
+        StringBuilder regex = new StringBuilder("^/");
 
         int uriParametersCounter = 1;
 
@@ -152,30 +158,34 @@ public class HttpRoute implements RouteInterface {
                         if (parts.length == 1) {
                             String parameterName = "uriParameter"+uriParametersCounter;
 
-                            segmentRegex = "(?<"+parameterName+">(.*))/";
+                            segmentRegex = "(?<" + parameterName + ">(.*))";
 
                             uriParameters.put(parameterName, "");
+                            uriParametersRegex.put(parameterName, segmentRegex);
                             uriParametersCounter++;
                         }
 
                         if (parts.length == 2) {
-                            segmentRegex = "(?<" + parts[0] + ">" + parts[1] + ")/";
+                            segmentRegex = "(?<" + parts[0] + ">" + parts[1] + ")";
                             uriParameters.put(parts[0], "");
+                            uriParametersRegex.put(parts[0], segmentRegex);
                         }
 
-                        regex += segmentRegex;
+                        if (segmentRegex.length() > 0) {
+                            regex.append(segmentRegex + "/");
+                        }
                     } else {
-                        regex += "("+segment+")/";
+                        String segmentRegex = "(" + segment + ")";
+                        regex.append(segmentRegex).append("/");
+                        uriStaticParametersRegex.put(segment, segmentRegex);
                     }
                 }
             }
         }
 
-        regex = regex.substring(0, regex.length()-1);
+        regex.replace(regex.length()-1, regex.length(), "$");
 
-        regex += "$";
-
-        this.compiledUri = Pattern.compile(regex);
+        this.compiledUri = Pattern.compile(regex.toString());
     }
 
     public boolean matches(String uri) {
@@ -194,6 +204,62 @@ public class HttpRoute implements RouteInterface {
 
     public String getUriParameter(String index) {
         return uriParameters.get(index);
+    }
+
+    public Map<String, String> getUriParameters() {
+        return uriParameters;
+    }
+
+    public Map<String, String> getUriRegexes() {
+        return uriParametersRegex;
+    }
+
+    public String generateUri(Map<String, String> parameters) throws Exception {
+        matchesParameters(parameters);
+
+        String uri = compiledUri.toString();
+
+        for (Map.Entry<String, String> parameter: uriParametersRegex.entrySet()) {
+            uri = uri.replace(parameter.getValue(), parameters.get(parameter.getKey()));
+        }
+
+        for (Map.Entry<String, String> parameter: uriStaticParametersRegex.entrySet()) {
+            uri = uri.replace(parameter.getValue(), parameter.getKey());
+        }
+
+        uri = uri.substring(1, uri.length() -1);
+
+        if (uri.length() == 0) {
+            uri = "/";
+        }
+
+        return uri;
+    }
+
+    protected boolean matchesParameters(Map<String, String> parameters) throws Exception {
+        for (Map.Entry<String, String> parameter: uriParametersRegex.entrySet()) {
+            String parameterKey = parameter.getKey();
+            if (parameters.containsKey(parameterKey)) {
+                String passedParameterValue = parameters.get(parameterKey);
+                Pattern pattern = Pattern.compile(parameter.getValue());
+                Matcher matcher = pattern.matcher(passedParameterValue);
+                if (!matcher.find()) {
+                    StringBuilder sb = new StringBuilder("Invalid parameter [");
+                    sb
+                            .append(parameterKey).append("] value in Route [").append(name)
+                            .append("], parameter expected to be compatible with regex: ")
+                            .append(parameter.getValue());
+                    throw new InvalidRouteParameterValueException(sb.toString());
+                }
+            } else {
+                StringBuilder sb = new StringBuilder("Route [");
+                sb.append(name).append("] expects parameter [").append(parameter.getKey())
+                        .append("] to be provided, parameters provided: ").append(String.join(",", parameters.keySet()));
+                throw new RouteParameterExpectedException(sb.toString());
+            }
+        }
+
+        return true;
     }
 
     protected String normalizeUri(String uri) {

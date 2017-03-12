@@ -1,6 +1,6 @@
 package jswf.components.generic.exceptions;
 
-public class RouteNotFoundException extends Exception {
+public class RouteNotFoundException extends HttpRouteException {
 
     public RouteNotFoundException() {
         super();
