@@ -5,8 +5,6 @@ import jswf.components.generic.HttpResponse;
 import jswf.framework.AbstractComponent;
 import jswf.framework.Environment;
 import org.eclipse.jetty.http.HttpStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 
@@ -16,8 +14,6 @@ import java.net.URL;
  * It also logs any exception that has been passed through the environment.
  */
 public class LogRequestComponent extends AbstractComponent {
-
-    private static final Logger logger = LoggerFactory.getLogger("LogRequestComponent");
 
     public void invoke(Environment environment) {
         HttpRequest httpRequest = (HttpRequest) environment.getRequest();
@@ -32,26 +28,60 @@ public class LogRequestComponent extends AbstractComponent {
             protocol = url.getProtocol();
         } catch (Exception e) {}
 
-        System.out.println(initialTimestamp + " | -> " + httpRequest.getRequestURI() + " | " + protocol.toUpperCase() + " | " + httpRequest.getMethod());
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder
+                .append(initialTimestamp)
+                .append(" | -> ")
+                .append(httpRequest.getRequestURI())
+                .append("?")
+                .append(httpRequest.getQueryString())
+                .append(" | ")
+                .append(protocol.toUpperCase())
+                .append(" | ")
+                .append(httpRequest.getMethod())
+        ;
+
+        System.out.println(stringBuilder);
 
         next(environment);
 
         Exception environmentException = environment.getException();
         if (environmentException != null) {
-            System.out.println(initialTimestamp + " | Internal Exception {");
-            System.out.println("              |  Class: " + environmentException.getClass());
-            System.out.println("              |  Message: " + environmentException.getMessage());
-            System.out.println("              |  Stack Trace: { ");
+            stringBuilder = new StringBuilder();
+            stringBuilder
+                    .append(initialTimestamp).append(" | Internal Exception {\n")
+                    .append("              |  Class: ").append(environmentException.getClass()).append("\n")
+                    .append("              |  Message: ").append(environmentException.getMessage()).append("\n")
+                    .append("              |  Stack Trace: { \n")
+            ;
             for (StackTraceElement element: environmentException.getStackTrace()) {
-                System.out.println("              |   (" + element.getLineNumber() + ") " + element.getClassName() + "::" + element.getMethodName());
+                stringBuilder.append("              |   (").append(element.getLineNumber()).append(") ").append(element.getClassName()).append("::").append(element.getMethodName()).append("\n");
             }
-            System.out.println("              |  }");
-            System.out.println("              | }");
+            stringBuilder.append("              |  }\n");
+            stringBuilder.append("              | }\n");
+
+            System.out.println(stringBuilder);
         }
 
         int statusCode = httpResponse.getStatus();
         long finalTimestamp = System.currentTimeMillis();
-        System.out.println(finalTimestamp + " | <- " + httpRequest.getRequestURI() + " | " + (finalTimestamp - initialTimestamp) + "ms | " +  statusCode + " " + HttpStatus.getMessage(httpResponse.getStatus()));
+
+        stringBuilder = new StringBuilder();
+        stringBuilder
+                .append(finalTimestamp)
+                .append(" | <- ")
+                .append(httpRequest.getRequestURI())
+                .append("?")
+                .append(httpRequest.getQueryString())
+                .append(" | ")
+                .append((finalTimestamp - initialTimestamp))
+                .append("ms | ")
+                .append(statusCode)
+                .append(" ")
+                .append(HttpStatus.getMessage(httpResponse.getStatus()))
+        ;
+
+        System.out.println(stringBuilder);
     }
 
 }
