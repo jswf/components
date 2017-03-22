@@ -28,13 +28,20 @@ public class LogRequestComponent extends AbstractComponent {
             protocol = url.getProtocol();
         } catch (Exception e) {}
 
+        String queryString = httpRequest.getQueryString();
+
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder
                 .append(initialTimestamp)
                 .append(" | -> ")
                 .append(httpRequest.getRequestURI())
-                .append("?")
-                .append(httpRequest.getQueryString())
+                ;
+
+        if (queryString != null) {
+            stringBuilder.append("?").append(queryString);
+        }
+
+        stringBuilder
                 .append(" | ")
                 .append(protocol.toUpperCase())
                 .append(" | ")
@@ -71,8 +78,13 @@ public class LogRequestComponent extends AbstractComponent {
                 .append(finalTimestamp)
                 .append(" | <- ")
                 .append(httpRequest.getRequestURI())
-                .append("?")
-                .append(httpRequest.getQueryString())
+                ;
+
+        if (queryString != null) {
+            stringBuilder.append("?").append(queryString);
+        }
+
+        stringBuilder
                 .append(" | ")
                 .append((finalTimestamp - initialTimestamp))
                 .append("ms | ")
