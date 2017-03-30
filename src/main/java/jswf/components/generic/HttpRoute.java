@@ -158,7 +158,7 @@ public class HttpRoute implements RouteInterface {
                         if (parts.length == 1) {
                             String parameterName = "uriParameter"+uriParametersCounter;
 
-                            segmentRegex = "(?<" + parameterName + ">(.*))";
+                            segmentRegex = "(?<" + parameterName + ">" + parts[0] + ")";
 
                             uriParameters.put(parameterName, "");
                             uriParametersRegex.put(parameterName, segmentRegex);
