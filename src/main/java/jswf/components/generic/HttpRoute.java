@@ -172,12 +172,11 @@ public class HttpRoute implements RouteInterface {
                         }
 
                         if (segmentRegex.length() > 0) {
-                            regex.append(segmentRegex + "/");
+                            regex.append(segmentRegex).append("/");
                         }
                     } else {
-                        String segmentRegex = "(" + segment + ")";
-                        regex.append(segmentRegex).append("/");
-                        uriStaticParametersRegex.put(segment, segmentRegex);
+                        regex.append(segment).append("/");
+                        uriStaticParametersRegex.put(segment, segment);
                     }
                 }
             }
