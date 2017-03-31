@@ -41,6 +41,16 @@ public class HttpResponse implements ResponseInterface {
         return httpServletResponse.getContentType();
     }
 
+    public HttpResponse setCharacterEncoding(String charset) {
+        httpServletResponse.setCharacterEncoding(charset);
+
+        return this;
+    }
+
+    public String getCharacterEncoding() {
+        return  httpServletResponse.getCharacterEncoding();
+    }
+
     public HttpResponse setContentLength(int length) {
         httpServletResponse.setContentLength(length);
 
